@@ -1,0 +1,26 @@
+#spring.application.name=auth-and-security
+
+spring:
+  application:
+    name: auth-and-security
+  datasource:
+    url: jdbc:mysql://dev.macacolabs.site:3307/approval_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: mysql@
+  jpa:
+    properties:
+      hibernate:
+        highlight_sql: true
+        format-sql: true
+        use_sql_comments: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
+
+server:
+  port: 8082
