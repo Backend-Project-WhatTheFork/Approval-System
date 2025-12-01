@@ -28,8 +28,8 @@ jobs:
 
       - name: Checkout main code
         uses: actions/checkout@v4
-        with:
-          ref: main
+#        with:
+#          ref: main
 
       - name: Issue Parser
         uses: stefanbuck/github-issue-parser@v3
@@ -71,6 +71,13 @@ jobs:
 
       - name: Log created issue
         run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
+
+      - name: Add Jira Key as label
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'add-labels'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '${{ steps.create.outputs.issue }}'
 
       - name: Update issue title
         uses: actions-cool/issues-helper@v3
