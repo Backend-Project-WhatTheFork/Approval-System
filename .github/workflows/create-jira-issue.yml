@@ -4,7 +4,6 @@ on:
     types:
       - opened
       - closed
-      - reopened
 
 permissions:
   contents: read
@@ -15,7 +14,7 @@ jobs:
   # 1. 이슈 생성 시 실행 (Opened)
   # ------------------------------------------------------------------
   create-issue:
-    if: github.event.action == 'opened' || github.event.action == 'reopened'
+    if: github.event.action == 'opened'
     name: Create Jira issue
     runs-on: ubuntu-latest
     steps:
