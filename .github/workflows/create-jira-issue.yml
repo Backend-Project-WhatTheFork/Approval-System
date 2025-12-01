@@ -4,6 +4,7 @@ on:
     types:
       - opened
       - closed
+      - reopened
 
 permissions:
   contents: read
@@ -14,7 +15,7 @@ jobs:
   # 1. 이슈 생성 시 실행 (Opened)
   # ------------------------------------------------------------------
   create-issue:
-    if: github.event.action == 'opened'
+    if: github.event.action == 'opened' || github.event.action == 'reopened'
     name: Create Jira issue
     runs-on: ubuntu-latest
     steps:
@@ -61,12 +62,12 @@ jobs:
           issuetype: Task
           summary: '${{ github.event.issue.title }}'
           description: '${{ steps.md2jira.outputs.output-text }}'
-          fields: |
-            {
-              "parent": {
-                "key": "${{ steps.issue-parser.outputs.issueparser_parentKey }}"
-              }
-            }
+#          fields: |
+#            {
+#              "parent": {
+#                "key": "${{ steps.issue-parser.outputs.issueparser_parentKey }}"
+#              }
+#            }
 
       - name: Log created issue
         run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
