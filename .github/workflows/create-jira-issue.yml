@@ -59,7 +59,7 @@ jobs:
         uses: atlassian/gajira-create@v3
         with:
           project: APPR
-          issuetype: '작업'
+          issuetype: Task
           summary: '${{ github.event.issue.title }}'
           description: '${{ steps.md2jira.outputs.output-text }}'
 #          fields: |
