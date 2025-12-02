@@ -23,21 +23,22 @@ public class Member {
     public String password;
 
     @Column(nullable = false)
-    public int position_code;
+    public int positionCode;
 
     @Column(nullable = false)
-    public String dept_id;
+    public String deptId;
 
     @Column(nullable = false)
-    public boolean is_dept_leader;
+    public boolean isDeptLeader;
 
     @Builder
-    public Member(String name, String email, String password, int position_code, String dept_id, boolean is_dept_leader) {
+
+    public Member(String name, String email, String password, int positionCode, String deptId, boolean isDeptLeader) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.position_code = position_code;
-        this.dept_id = dept_id;
-        this.is_dept_leader = is_dept_leader;
+        this.positionCode = positionCode;
+        this.deptId = deptId;
+        this.isDeptLeader = isDeptLeader;
     }
 }
