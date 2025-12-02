@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,4 +34,11 @@ public class Resources {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ResourceCategory category;
+
+    @Builder
+    public Resources(String name, int maxCapacity, ResourceCategory category) {
+        this.name = name;
+        this.maxCapacity = maxCapacity;
+        this.category = category;
+    }
 }
