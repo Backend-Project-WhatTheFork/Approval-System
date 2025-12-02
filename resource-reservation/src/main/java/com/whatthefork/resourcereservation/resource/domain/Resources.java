@@ -1,6 +1,6 @@
-package com.whatthefork.resourcereservation.domain;
+package com.whatthefork.resourcereservation.resource.domain;
 
-import com.whatthefork.resourcereservation.enums.ResourceCategory;
+import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

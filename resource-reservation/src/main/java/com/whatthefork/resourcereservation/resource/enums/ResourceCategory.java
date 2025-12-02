@@ -1,4 +1,4 @@
-package com.whatthefork.resourcereservation.enums;
+package com.whatthefork.resourcereservation.resource.enums;
 
 public enum ResourceCategory {
 
