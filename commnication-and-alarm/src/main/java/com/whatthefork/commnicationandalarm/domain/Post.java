@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Post {
 
     @Id
@@ -25,8 +24,8 @@ public class Post {
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    @Column(name = "topic_id", nullable=false)
-    private Long topicId;
+    @Column(name = "is_Announcement", nullable=false)
+    private Boolean isAnnouncement;
 
     @Column(name = "title", length = 20, nullable = false)
     private String title;
@@ -35,13 +34,13 @@ public class Post {
     private String content;
 
     @Column(name = "view_count", nullable = false)
-    private Integer viewCount;
+    private Integer viewCount  = 0;
 
     @Column(name = "comment_count", nullable=false)
-    private Integer commentCount;
+    private Integer commentCount = 0;
 
     @Column(name = "is_pinned", nullable = false)
-    public boolean isPinned;
+    public Boolean isPinned;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
@@ -50,7 +49,7 @@ public class Post {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "is_deleted", nullable = false)
-    public boolean isDeleted = false;
+    public Boolean isDeleted = false;
 
     public void increaseViewCont()
     {

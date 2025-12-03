@@ -42,7 +42,7 @@ public class Comment {
     private Integer likeCount = 0;
 
     @Column(name = "is_deleted", nullable = false)
-    public boolean isDeleted = false;
+    public Boolean isDeleted = false;
 
     public void updateContent(String newContent) {
         this.content = newContent;
