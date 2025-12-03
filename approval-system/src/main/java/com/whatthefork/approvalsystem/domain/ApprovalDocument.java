@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +19,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ApprovalDocument {
 
     @Id
@@ -48,4 +48,14 @@ public class ApprovalDocument {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Builder
+    public ApprovalDocument(Long drafter, DocStatusEnum docStatus, String title, String content, Long version, int currentSequence, LocalDateTime createdAt) {
+        this.drafter = drafter;
+        this.docStatus = docStatus;
+        this.title = title;
+        this.content = content;
+        this.version = version;
+        this.currentSequence = currentSequence;
+        this.createdAt = createdAt;
+    }
 }

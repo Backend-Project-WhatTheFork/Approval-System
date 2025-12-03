@@ -9,12 +9,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Department {
 
@@ -28,4 +28,10 @@ public class Department {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_dept_id")
     private Department parent;
+
+    @Builder
+    public Department(String name, Department parent) {
+        this.name = name;
+        this.parent = parent;
+    }
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,7 +21,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ApprovalHistory {
 
     @Id
@@ -46,4 +46,13 @@ public class ApprovalHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "history_parent_id")
     private ApprovalHistory parent;
+
+    @Builder
+    public ApprovalHistory(Long document, Long actor, LocalDateTime openDate, ActionTypeEnum actionType, ApprovalHistory parent) {
+        this.document = document;
+        this.actor = actor;
+        this.openDate = openDate;
+        this.actionType = actionType;
+        this.parent = parent;
+    }
 }
