@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,7 +15,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ApprovalReferrer {
 
     @Id
@@ -31,4 +31,10 @@ public class ApprovalReferrer {
 
     private LocalDateTime viewedAt;
 
+    @Builder
+    public ApprovalReferrer(Long document, Long referrer, LocalDateTime viewedAt) {
+        this.document = document;
+        this.referrer = referrer;
+        this.viewedAt = viewedAt;
+    }
 }

@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +18,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ApprovalLine {
 
     @Id
@@ -44,4 +44,13 @@ public class ApprovalLine {
 
     private LocalDateTime approvedAt;
 
+    @Builder
+    public ApprovalLine(Long document, Long approver, int sequence, LineStatusEnum lineStatus, String comment, LocalDateTime approvedAt) {
+        this.document = document;
+        this.approver = approver;
+        this.sequence = sequence;
+        this.lineStatus = lineStatus;
+        this.comment = comment;
+        this.approvedAt = approvedAt;
+    }
 }
