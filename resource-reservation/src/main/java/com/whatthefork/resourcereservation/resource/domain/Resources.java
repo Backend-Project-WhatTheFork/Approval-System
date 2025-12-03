@@ -41,4 +41,19 @@ public class Resources {
         this.maxCapacity = maxCapacity;
         this.category = category;
     }
+
+    public Resources updateName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Resources updateMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+        return this;
+    }
+
+    public Resources updateIsBooked(boolean isBooked) {
+        this.isBooked = isBooked;
+        return this;
+    }
 }

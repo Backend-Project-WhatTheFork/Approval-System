@@ -52,4 +52,29 @@ public class ResourceManagement {
         this.capacity = capacity;
         this.reason = reason;
     }
+
+    public ResourceManagement updateBookedDate(LocalDateTime bookedDate) {
+        this.bookedDate = bookedDate;
+        return this;
+    }
+
+    public ResourceManagement updateStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+        return this;
+    }
+
+    public ResourceManagement updateEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
+    public ResourceManagement updateReason(String reason) {
+        this.reason = reason;
+        return this;
+    }
+
+    public ResourceManagement updateCapacity(int capacity) {
+        this.capacity = capacity;
+        return this;
+    }
 }
