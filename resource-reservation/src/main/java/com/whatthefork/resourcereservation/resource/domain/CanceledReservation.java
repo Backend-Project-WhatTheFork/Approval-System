@@ -1,4 +1,4 @@
-package com.whatthefork.resourcereservation.domain;
+package com.whatthefork.resourcereservation.resource.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
