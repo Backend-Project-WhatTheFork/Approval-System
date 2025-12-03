@@ -5,14 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Comment {
 
     @Id
@@ -38,11 +37,19 @@ public class Comment {
     @Column(name = "content", nullable = false, length = 100)
     private String content;
 
-    @Column(name = "like_count")
-    private Integer likeCount = 0;
-
     @Column(name = "is_deleted", nullable = false)
     public Boolean isDeleted = false;
+
+    @Builder
+    public Comment(Long memberId, Long postId, Long parentCommentId, String memberName, Integer depth, String content, Boolean isDeleted) {
+        this.memberId = memberId;
+        this.postId = postId;
+        this.parentCommentId = parentCommentId;
+        this.memberName = memberName;
+        this.depth = depth;
+        this.content = content;
+        this.isDeleted = isDeleted;
+    }
 
     public void updateContent(String newContent) {
         this.content = newContent;

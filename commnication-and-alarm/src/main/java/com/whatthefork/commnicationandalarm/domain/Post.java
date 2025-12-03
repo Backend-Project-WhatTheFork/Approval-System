@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,7 +35,7 @@ public class Post {
     private String content;
 
     @Column(name = "view_count", nullable = false)
-    private Integer viewCount  = 0;
+    private Integer viewCount = 0;
 
     @Column(name = "comment_count", nullable=false)
     private Integer commentCount = 0;
@@ -50,6 +51,18 @@ public class Post {
 
     @Column(name = "is_deleted", nullable = false)
     public Boolean isDeleted = false;
+
+    @Builder
+    public Post(Long memberId, Boolean isAnnouncement, String title, String content, Boolean isPinned, LocalDateTime updatedAt, LocalDateTime createdAt, Boolean isDeleted) {
+        this.memberId = memberId;
+        this.isAnnouncement = isAnnouncement;
+        this.title = title;
+        this.content = content;
+        this.isPinned = isPinned;
+        this.updatedAt = updatedAt;
+        this.createdAt = createdAt;
+        this.isDeleted = isDeleted;
+    }
 
     public void increaseViewCont()
     {
