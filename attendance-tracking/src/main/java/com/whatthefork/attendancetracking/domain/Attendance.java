@@ -1,7 +1,10 @@
 package com.whatthefork.attendancetracking.domain;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,9 +39,6 @@ public class Attendance {
     @Column(name = "overtime_minutes", nullable = false)
     private Integer overtimeMinutes;
 
-    @Column(name = "work_date", nullable = false)
-    private LocalDate workDate;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -48,12 +48,11 @@ public class Attendance {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Attendance(Long userId, LocalDateTime punchInDate, LocalDateTime punchOutDate, boolean isLate, Integer overtimeMinutes, LocalDate workDate) {
+    public Attendance(Long userId, LocalDateTime punchInDate, LocalDateTime punchOutDate, boolean isLate, Integer overtimeMinutes) {
         this.userId = userId;
         this.punchInDate = punchInDate;
         this.punchOutDate = punchOutDate;
         this.isLate = isLate;
         this.overtimeMinutes = overtimeMinutes;
-        this.workDate = workDate;
     }
 }
