@@ -1,4 +1,4 @@
-package com.whatthefork.authandsecurity.domain;
+package com.whatthefork.authandsecurity.domain.model;
 
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -12,33 +12,37 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
+    private long id;
 
     @Column(nullable = false)
-    public String name;
-    @Column(nullable = false)
-    public String email;
+    private String name;
 
     @Column(nullable = false)
-    public String password;
+    private String email;
 
     @Column(nullable = false)
-    public int positionCode;
+    private String password;
 
     @Column(nullable = false)
-    public String deptId;
+    private int positionCode;
 
     @Column(nullable = false)
-    public boolean isDeptLeader;
+    private String deptId;
+
+    @Column(nullable = false)
+    private boolean isDeptLeader;
+
+    @Column(nullable = false)
+    private boolean isAdmin;
 
     @Builder
-
-    public Member(String name, String email, String password, int positionCode, String deptId, boolean isDeptLeader) {
+    public Member(String name, String email, String password, int positionCode, String deptId, boolean isDeptLeader, boolean isAdmin){
         this.name = name;
         this.email = email;
         this.password = password;
         this.positionCode = positionCode;
         this.deptId = deptId;
         this.isDeptLeader = isDeptLeader;
+        this.isAdmin = isAdmin;
     }
 }
