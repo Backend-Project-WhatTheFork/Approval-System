@@ -1,12 +1,15 @@
 package com.whatthefork.approvalsystem.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -16,16 +19,15 @@ public class ApprovalReferrer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doc_id", nullable = false)
-    private ApprovalDocument document;
+    // ApprovalDocument 객체 간접 참조
+    @Column(name = "doc_id", nullable = false)
+    private Long document;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "referrer_id", nullable = false)
-    private Member referrer;
+    // 참조자(결재 권한 없음, 읽을 수만 있으며 결재선 상태에 영향 X), Member 객체 간접 참조
+    @Column(name = "referrer_id", nullable = false)
+    private Long referrer;
 
     private LocalDateTime viewedAt;
 

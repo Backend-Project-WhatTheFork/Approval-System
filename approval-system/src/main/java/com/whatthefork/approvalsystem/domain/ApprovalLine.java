@@ -1,7 +1,13 @@
 package com.whatthefork.approvalsystem.domain;
 
 import com.whatthefork.approvalsystem.enums.LineStatusEnum;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,28 +25,23 @@ public class ApprovalLine {
     @Column(name = "line_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doc_id", nullable = false)
-    private ApprovalDocument document;
+    // ApprovalDocument 객체 간접 참조
+    @Column(name = "doc_id", nullable = false)
+    private Long document;
 
-    // 지정된 결재자
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approver_id", nullable = false)
-    private Member approver;
+    // 결재자, Member 객체 간접 참조
+    @Column(name = "approver_id", nullable = false)
+    private Long approver;
 
     @Column(nullable = false)
     private int sequence;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LineStatusEnum lineStatus;  // ENUM: WAIT, APPROVED, REJECTED, CANCLED
+    private LineStatusEnum lineStatus;  // ENUM: WAIT, APPROVED, REJECTED, CANCELED
 
     private String comment;
 
-    @Column(name = "approval_at")
-    private LocalDateTime approvalDate;
-
-    @Column(nullable = false)
-    private boolean isArbitrary = false;
+    private LocalDateTime approvedAt;
 
 }
