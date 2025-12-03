@@ -1,6 +1,11 @@
 package com.whatthefork.commnicationandalarm.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,8 +14,11 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Post {
+
     @Id
+    @Column(name = "post_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -20,10 +28,10 @@ public class Post {
     @Column(name = "topic_id", nullable=false)
     private Long topicId;
 
-    @Column(name = "title", length = 30, nullable = false, columnDefinition = "TEXT")
+    @Column(name = "title", length = 20, nullable = false)
     private String title;
 
-    @Column(name = "content", length = 100, nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Column(name = "view_count", nullable = false)
@@ -42,28 +50,11 @@ public class Post {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "is_deleted", nullable = false)
-    public boolean isDeleted;
-
-    public void createPost(Long memberId, String content, Long topicId) {
-        this.memberId = memberId;
-        this.content = content;
-        this.topicId = topicId;
-    }
-
-    public void modifyPost(String content, Long topicId) {
-        this.content = content;
-        this.topicId = topicId;
-    }
+    public boolean isDeleted = false;
 
     public void increaseViewCont()
     {
         this.viewCount = this.viewCount + 1;
-    }
-
-    @PrePersist
-    public void postDefault() {
-        if (commentCount == null) commentCount = 0;
-        if (viewCount == null) viewCount = 0;
     }
 
     public void increaseCommentCount() {

@@ -6,9 +6,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PostEnum {
-    PINNED,
-    ANNOUNCEMENT,
-    COMMON,
-    ACTIVE,
-    DELETED
+    PINNED("고정"),
+    ANNOUNCEMENT("공지사항 게시판"),
+    COMMON("일반 게시판"),
+    ACTIVE("게시"),
+    DELETED("삭제");
+
+    private final String description;
 }

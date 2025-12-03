@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum CommentEnum {
-    ACTIVE,
-    DELETED
+    ACTIVE("게시"),
+    DELETED("삭제");
+
+    private final String description;
 }
