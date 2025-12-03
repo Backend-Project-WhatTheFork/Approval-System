@@ -182,7 +182,7 @@ branch를 생성하기 전 issue를 먼저 작성합니다. issue 작성 후 생
 
 ### 5. Etc
 
-- `feature/APPR-2-approval`, `feature/APPR-1-config`
+- `feat/APPR-2-approval`, `feat/APPR-1-config`
 
 
 </div>
@@ -256,3 +256,4 @@ develop & main branch로 merge할 때에는 pull request가 필요합니다. pul
 
 </div>
 </details>
+
