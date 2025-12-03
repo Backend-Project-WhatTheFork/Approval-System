@@ -32,4 +32,14 @@ public class CanceledReservation {
         this.reason = reason;
         this.canceledDate = canceledDate;
     }
+
+    public CanceledReservation updateReason(String reason) {
+        this.reason = reason;
+        return this;
+    }
+
+    public CanceledReservation updateCanceledDate(LocalDateTime canceledDate) {
+        this.canceledDate = canceledDate;
+        return this;
+    }
 }
