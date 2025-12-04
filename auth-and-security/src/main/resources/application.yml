@@ -24,3 +24,7 @@ logging:
 
 server:
   port: 8082
+
+jwt:
+  secret: dGVlbmFnZXByaWVzdGFtaWNvb2x0b3lvdQ==
+  expiration: 86400000  # 24 hours in milliseconds

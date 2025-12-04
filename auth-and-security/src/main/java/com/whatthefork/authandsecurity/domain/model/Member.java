@@ -45,4 +45,15 @@ public class Member {
         this.isDeptLeader = isDeptLeader;
         this.isAdmin = isAdmin;
     }
+
+    public Member(Long id, String name, String email, String password, int positionCode, String deptId, boolean isDeptLeader, boolean isAdmin){
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.positionCode = positionCode;
+        this.deptId = deptId;
+        this.isDeptLeader = isDeptLeader;
+        this.isAdmin = isAdmin;
+    }
 }
