@@ -1,7 +1,11 @@
 package com.whatthefork.resourcereservation.resource.repository;
 
-import org.springframework.stereotype.Repository;
+import com.whatthefork.resourcereservation.resource.entity.Resources;
+import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 
-@Repository
-public class ResourceRepository {
+import java.util.List;
+
+public interface ResourceRepository {
+
+    List<Resources> findByCategory(ResourceCategory category);
 }

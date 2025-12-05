@@ -13,19 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/vi/conference-room")
+@RequestMapping("/api/v1/conference-rooms")
 @RequiredArgsConstructor
 public class ConferenceRoomController {
 
     private final ResourceService resourceService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<ApiResponse> conferenceRoom() {
-
+        System.out.println("요청 들어옴");
         List<Resources> conferenceRoomList = new ArrayList<>();
 
         conferenceRoomList = resourceService.getAllConferenceRooms();
 
-        return conferenceRoomList;
+        return ResponseEntity.ok(ApiResponse.success(conferenceRoomList));
     }
 }
