@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
@@ -27,5 +29,11 @@ public class ConferenceRoomController {
         conferenceRoomList = resourceService.getAllConferenceRooms();
 
         return ResponseEntity.ok(ApiResponse.success(conferenceRoomList));
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ApiResponse> createConferenceRoom(@RequestBody Resources conferenceRoom) {
+
+
     }
 }
