@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ResourceRepository {
 
-    List<Resources> findByCategory(ResourceCategory category);
+    List<Resources> findAllByCategory(ResourceCategory category);
 }

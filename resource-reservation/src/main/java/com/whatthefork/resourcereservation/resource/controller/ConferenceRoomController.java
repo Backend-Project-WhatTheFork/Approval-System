@@ -1,6 +1,7 @@
 package com.whatthefork.resourcereservation.resource.controller;
 
 import com.whatthefork.resourcereservation.common.ApiResponse;
+import com.whatthefork.resourcereservation.resource.dto.response.ResourceResponse;
 import com.whatthefork.resourcereservation.resource.entity.Resources;
 import com.whatthefork.resourcereservation.resource.service.ResourceService;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +25,15 @@ public class ConferenceRoomController {
     @GetMapping("")
     public ResponseEntity<ApiResponse> conferenceRoom() {
         System.out.println("요청 들어옴");
-        List<Resources> conferenceRoomList = new ArrayList<>();
 
-        conferenceRoomList = resourceService.getAllConferenceRooms();
+        List<ResourceResponse> conferenceRoomList = resourceService.getAllConferenceRooms();
 
         return ResponseEntity.ok(ApiResponse.success(conferenceRoomList));
     }
 
-    @PostMapping("")
-    public ResponseEntity<ApiResponse> createConferenceRoom(@RequestBody Resources conferenceRoom) {
-
-
-    }
+//    @PostMapping("")
+//    public ResponseEntity<ApiResponse> createConferenceRoom(@RequestBody Resources conferenceRoom) {
+//
+//
+//    }
 }
