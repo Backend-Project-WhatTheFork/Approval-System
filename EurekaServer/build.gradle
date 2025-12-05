@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.E'
 version = '0.0.1-SNAPSHOT'
-description = 'UnicornServer'
+description = 'EurekaServer'
 
 java {
     toolchain {
