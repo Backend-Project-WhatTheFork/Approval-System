@@ -11,20 +11,17 @@ import java.util.List;
 
 @Setter
 @Getter
-public class CreateDocumentRequestDto {
+public class UpdateDocumentRequestDto {
+
+    @NotNull(message = "결재선 목록은 필수입니다.")
+    @Size(min = 3, max = 3, message = "결재선은 필수로 3명을 지정해야 합니다.")
+    private List<Long> approverIds;
 
     @NotBlank(message = "제목은 필수로 입력해야 합니다.")
     private String title;
 
     @NotBlank(message = "내용은 필수로 입력해야 합니다.")
     private String content;
-
-    @NotNull(message = "결재선 목록은 필수입니다.")
-    @Size(min = 3, max = 3, message = "결재선은 필수로 3명을 지정해야 합니다.")
-    private List<Long> approverIds;
-
-    // 참조자, 선택사항
-    private List<Long> referrer;
 
     @NotBlank(message = "휴가 시작 일자는 필수로 지정해야 합니다.")
     private LocalDate startVacationDate;

@@ -12,6 +12,7 @@ import jakarta.persistence.Version;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@SQLRestriction("is_deleted = false")
 public class ApprovalDocument {
 
     @Id
@@ -54,6 +56,9 @@ public class ApprovalDocument {
     @Column(name = "end_vacation")
     private LocalDate endVacationDate;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
     @Builder
     public ApprovalDocument(Long drafter, DocStatusEnum docStatus, String title, String content, Long version, int currentSequence, LocalDateTime createdAt, LocalDate startVacationDate, LocalDate endVacationDate) {
         this.drafter = drafter;
@@ -69,5 +74,16 @@ public class ApprovalDocument {
 
     public void submit() {
         this.docStatus = DocStatusEnum.IN_PROGRESS;
+    }
+
+    public void updateDocument(String title, String content, LocalDate startVacationDate, LocalDate endVacationDate) {
+        this.title = title;
+        this.content = content;
+        this.startVacationDate = startVacationDate;
+        this.endVacationDate = endVacationDate;
+    }
+
+    public void deleteDocument() {
+        this.isDeleted = true;
     }
 }
