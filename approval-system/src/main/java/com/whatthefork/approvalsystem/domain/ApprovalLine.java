@@ -40,17 +40,14 @@ public class ApprovalLine {
     @Column(nullable = false)
     private LineStatusEnum lineStatus;  // ENUM: WAIT, APPROVED, REJECTED, CANCELED
 
-    private String comment;
-
     private LocalDateTime approvedAt;
 
     @Builder
-    public ApprovalLine(Long document, Long approver, int sequence, LineStatusEnum lineStatus, String comment, LocalDateTime approvedAt) {
+    public ApprovalLine(Long document, Long approver, int sequence, LineStatusEnum lineStatus, LocalDateTime approvedAt) {
         this.document = document;
         this.approver = approver;
         this.sequence = sequence;
         this.lineStatus = lineStatus;
-        this.comment = comment;
         this.approvedAt = approvedAt;
     }
 }
