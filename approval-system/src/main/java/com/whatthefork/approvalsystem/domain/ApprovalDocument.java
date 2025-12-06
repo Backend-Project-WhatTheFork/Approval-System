@@ -9,11 +9,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Version;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -48,8 +48,14 @@ public class ApprovalDocument {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(name = "start_vacation")
+    private LocalDate startVacationDate;
+
+    @Column(name = "end_vacation")
+    private LocalDate endVacationDate;
+
     @Builder
-    public ApprovalDocument(Long drafter, DocStatusEnum docStatus, String title, String content, Long version, int currentSequence, LocalDateTime createdAt) {
+    public ApprovalDocument(Long drafter, DocStatusEnum docStatus, String title, String content, Long version, int currentSequence, LocalDateTime createdAt, LocalDate startVacationDate, LocalDate endVacationDate) {
         this.drafter = drafter;
         this.docStatus = docStatus;
         this.title = title;
@@ -57,5 +63,11 @@ public class ApprovalDocument {
         this.version = version;
         this.currentSequence = currentSequence;
         this.createdAt = createdAt;
+        this.startVacationDate = startVacationDate;
+        this.endVacationDate = endVacationDate;
+    }
+
+    public void submit() {
+        this.docStatus = DocStatusEnum.IN_PROGRESS;
     }
 }
