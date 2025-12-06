@@ -1,6 +1,6 @@
 package com.whatthefork.communicationandalarm.common.dto.response;
 
-import com.whatthefork.communicationandalarm.post.domain.post.Post;
+import com.whatthefork.communicationandalarm.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.whatthefork.communicationandalarm.post.domain.post;
+package com.whatthefork.communicationandalarm.post.domain;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

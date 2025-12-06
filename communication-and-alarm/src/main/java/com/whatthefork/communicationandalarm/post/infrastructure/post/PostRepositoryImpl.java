@@ -1,7 +1,7 @@
 package com.whatthefork.communicationandalarm.post.infrastructure.post;
 
-import com.whatthefork.communicationandalarm.post.domain.post.Post;
-import com.whatthefork.communicationandalarm.post.domain.post.PostRepository;
+import com.whatthefork.communicationandalarm.post.domain.Post;
+import com.whatthefork.communicationandalarm.post.domain.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

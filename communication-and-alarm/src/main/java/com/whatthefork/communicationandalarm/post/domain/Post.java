@@ -1,4 +1,4 @@
-package com.whatthefork.communicationandalarm.post.domain.post;
+package com.whatthefork.communicationandalarm.post.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
