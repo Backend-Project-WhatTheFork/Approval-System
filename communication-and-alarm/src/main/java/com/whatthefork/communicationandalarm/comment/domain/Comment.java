@@ -1,5 +1,7 @@
 package com.whatthefork.communicationandalarm.comment.domain;
 
+import com.whatthefork.communicationandalarm.common.enums.Category;
+import com.whatthefork.communicationandalarm.post.domain.Post;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +33,7 @@ public class Comment {
     private String memberName;
 
     @Column(name = "depth", nullable = false)
-    private Integer depth = 0;
+    private Long depth = 0L;
 
     @Column(name = "content", nullable = false, length = 100)
     private String content;
@@ -40,7 +42,7 @@ public class Comment {
     public Boolean isDeleted = false;
 
     @Builder
-    public Comment(Long memberId, Long postId, Long parentCommentId, String memberName, Integer depth, String content, Boolean isDeleted) {
+    public Comment(Long memberId, Long postId, Long parentCommentId, String memberName, Long depth, String content, Boolean isDeleted) {
         this.memberId = memberId;
         this.postId = postId;
         this.parentCommentId = parentCommentId;
@@ -50,7 +52,15 @@ public class Comment {
         this.isDeleted = isDeleted;
     }
 
-    public void updateContent(String newContent) {
-        this.content = newContent;
+    public boolean isOwner(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 }

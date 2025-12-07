@@ -18,6 +18,16 @@ public class ApiResponse<T> {
     public static<T> ApiResponse<T> success(T data) {
         return ApiResponse.<T>builder()
                 .success(true)
+                .message("요청에 성공했습니다.")
+                .data(data)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    public static<T> ApiResponse<T> success(T data, String message) {
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message(message)
                 .data(data)
                 .timestamp(LocalDateTime.now())
                 .build();

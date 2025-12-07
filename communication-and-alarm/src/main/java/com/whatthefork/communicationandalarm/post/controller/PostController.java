@@ -1,24 +1,71 @@
 package com.whatthefork.communicationandalarm.post.controller;
 
 import com.whatthefork.communicationandalarm.common.ApiResponse;
+import com.whatthefork.communicationandalarm.common.dto.request.CreatePostRequest;
+import com.whatthefork.communicationandalarm.common.dto.request.UpdatePostRequest;
+import com.whatthefork.communicationandalarm.common.dto.response.PostResponse;
 import com.whatthefork.communicationandalarm.post.domain.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/posts")
+@RequestMapping("/api/v1/post")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
 
     /*
-    * 게시글 등록
+    * 게시물 등록
     * */
-    public ResponseEntity<ApiResponse<Void>> createPost() {
-        return null;
-    }
-    // 게시글을 만들기위해서 먼저 post 제목과
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> createPost(
+            @RequestParam Long memberId,
+            @RequestBody @Valid CreatePostRequest request
+    ) {
+        postService.create(memberId, request);
 
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(null));
+    }
+
+    /*
+     * 게시물 수정
+     * */
+    @PutMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> updatePost(
+            @PathVariable Long postId,
+            @RequestParam Long memberId,
+            @RequestBody @Valid UpdatePostRequest request
+    ) {
+        postService.update(memberId, postId, request);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
+    }
+
+    /*
+    *  게시물 삭제
+    * */
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<ApiResponse<Void>> deletePost(
+            @RequestParam Long memberId,
+            @PathVariable Long postId
+    ) {
+        postService.delete(memberId, postId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
+    }
+
+    /*
+    * 게시물 조회
+    * */
+    @GetMapping("/{postId}")
+    public ResponseEntity<ApiResponse<PostResponse>> getPost(
+            @RequestParam Long memberId,
+            @PathVariable("postId") Long postId
+    ) {
+        PostResponse postResponse = postService.get(memberId, postId);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(postResponse));
+    }
 }

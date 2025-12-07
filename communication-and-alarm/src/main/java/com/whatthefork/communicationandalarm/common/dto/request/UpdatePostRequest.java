@@ -1,15 +1,18 @@
 package com.whatthefork.communicationandalarm.common.dto.request;
 
+
 import com.whatthefork.communicationandalarm.common.enums.Category;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CreatePostRequest {
+public class UpdatePostRequest {
 
+    @NotNull
     private Category category;
 
     @NotBlank

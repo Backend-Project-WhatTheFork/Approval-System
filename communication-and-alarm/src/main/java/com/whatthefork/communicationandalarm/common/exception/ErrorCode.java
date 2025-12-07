@@ -24,7 +24,8 @@ public enum ErrorCode {
 
     // Comment
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "CM001", "댓글을 찾을 수 없습니다."),
-    COMMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "CM002", "댓글에 대한 접근 권한이 없습니다.");
+    COMMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "CM002", "댓글에 대한 접근 권한이 없습니다."),
+    COMMENT_DEPTH_EXCEEDED(HttpStatus.FORBIDDEN, "CM003", "댓글 답변 제한을 초과했습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

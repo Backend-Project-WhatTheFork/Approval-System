@@ -1,5 +1,6 @@
 package com.whatthefork.communicationandalarm.common.dto.response;
 
+import com.whatthefork.communicationandalarm.common.enums.Category;
 import com.whatthefork.communicationandalarm.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +14,29 @@ import java.time.LocalDateTime;
 public class PostResponse {
     private Long id;
     private Long memberId;
-    private Boolean isAnnouncement;
+    private String  memberName;
+    private Category category;
     private String title;
     private String content;
     private Boolean isPinned;
+    private Long viewCount;
+    private Long commentCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static PostResponse from(Post post, Boolean isAnnouncement, String username) {
-        return null;
+    public static PostResponse from(Post post, Long viewCount, Long commentCount) {
+        return PostResponse.builder()
+                .id(post.getId())
+                .memberId(post.getMemberId())
+                .memberName(post.getMemberName())
+                .category(post.getCategory())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .isPinned(post.getIsPinned())
+                .viewCount(viewCount)
+                .commentCount(commentCount)
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt())
+                .build();
     }
 }

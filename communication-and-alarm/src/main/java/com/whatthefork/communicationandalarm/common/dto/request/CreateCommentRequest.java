@@ -1,6 +1,5 @@
 package com.whatthefork.communicationandalarm.common.dto.request;
 
-import com.whatthefork.communicationandalarm.common.enums.Category;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CreatePostRequest {
 
-    private Category category;
+public class CreateCommentRequest {
 
-    @NotBlank
-    private String title;
+    Long parentCommentId;
 
-    @NotBlank
-    private String content;
+    @NotBlank(message = "댓글을 작성해 주세요.")
+    String content;
 }
+
+
