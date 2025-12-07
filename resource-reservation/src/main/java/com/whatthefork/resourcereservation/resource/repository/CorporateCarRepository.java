@@ -1,6 +1,5 @@
 package com.whatthefork.resourcereservation.resource.repository;
 
-import com.whatthefork.resourcereservation.resource.entity.ConferenceRoom;
 import com.whatthefork.resourcereservation.resource.entity.CorporateCar;
 import org.springframework.stereotype.Repository;
 

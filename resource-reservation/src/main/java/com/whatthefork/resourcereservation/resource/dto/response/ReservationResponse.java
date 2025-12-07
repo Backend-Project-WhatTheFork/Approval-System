@@ -1,6 +1,7 @@
 package com.whatthefork.resourcereservation.resource.dto.response;
 
-import com.whatthefork.resourcereservation.resource.entity.ResourceManagement;
+import com.whatthefork.resourcereservation.resource.entity.Reservation;
+import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +9,7 @@ import jakarta.validation.constraints.Past;
 
 import java.time.LocalDateTime;
 
-public record ResourceManagementResponse(
+public record ReservationResponse(
 
     @NotNull
     Long id,
@@ -29,9 +30,15 @@ public record ResourceManagementResponse(
     int capacity,
 
     @NotBlank
-    String reason
+    String reason,
+
+    @NotNull
+    ResourceCategory category,
+
+    @NotNull
+    boolean isExpired
 ) {
-    public ResourceManagementResponse(ResourceManagement management) {
+    public ReservationResponse(Reservation management) {
         this(
                 management.getId(),
                 management.getUserId(),
@@ -40,7 +47,9 @@ public record ResourceManagementResponse(
                 management.getStartDate(),
                 management.getEndDate(),
                 management.getCapacity(),
-                management.getReason()
+                management.getReason(),
+                management.getCategory(),
+                management.isExpired()
         );
     }
 }
