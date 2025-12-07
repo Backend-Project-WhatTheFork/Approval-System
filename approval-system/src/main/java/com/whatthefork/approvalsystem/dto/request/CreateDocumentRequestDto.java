@@ -26,10 +26,10 @@ public class CreateDocumentRequestDto {
     // 참조자, 선택사항
     private List<Long> referrer;
 
-    @NotBlank(message = "휴가 시작 일자는 필수로 지정해야 합니다.")
+    @NotNull(message = "휴가 시작 일자는 필수로 지정해야 합니다.")
     private LocalDate startVacationDate;
 
-    @NotBlank(message = "휴가 종료 일자는 필수로 지정해야 합니다.")
+    @NotNull(message = "휴가 종료 일자는 필수로 지정해야 합니다.")
     private LocalDate endVacationDate;
 
 }
