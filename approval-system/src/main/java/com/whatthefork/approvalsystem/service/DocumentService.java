@@ -1,5 +1,7 @@
 package com.whatthefork.approvalsystem.service;
 
+import com.whatthefork.approvalsystem.common.error.BusinessException;
+import com.whatthefork.approvalsystem.common.error.ErrorCode;
 import com.whatthefork.approvalsystem.domain.ApprovalDocument;
 import com.whatthefork.approvalsystem.domain.ApprovalHistory;
 import com.whatthefork.approvalsystem.domain.ApprovalLine;
@@ -109,17 +111,7 @@ public class DocumentService {
             throw new IllegalArgumentException("결재자 3명이 지정되지 않았습니다.");
         }
 
-        ApprovalDocument approvalDocument = approvalDocumentRepository.findById(docId).orElseThrow(
-                () -> new IllegalArgumentException("해당 문서가 존재하지 않습니다.")
-        );
-
-        if(!approvalDocument.getDrafter().equals(userId)) {
-            throw new IllegalArgumentException("본인의 문서만 수정할 수 있습니다.");
-        }
-
-        if(approvalDocument.getDocStatus() != DocStatusEnum.TEMP) {
-            throw new IllegalArgumentException("검토 중인 기안은 수정할 수 없습니다.");
-        }
+        ApprovalDocument approvalDocument = validateUpdateAuthority(userId, docId);
 
         approvalDocument.updateDocument(
                 requestDto.getTitle(),
@@ -148,18 +140,39 @@ public class DocumentService {
 
     @Transactional
     public void deleteDocument(Long userId, Long docId) {
+        ApprovalDocument approvalDocument = validateDeleteAuthority(userId, docId);
+        approvalDocument.deleteDocument();
+    }
+
+    private ApprovalDocument validateUpdateAuthority(Long userId, Long docId) {
         ApprovalDocument approvalDocument = approvalDocumentRepository.findById(docId).orElseThrow(
-                () -> new IllegalArgumentException("해당 문서가 존재하지 않습니다.")
+                () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
         );
 
         if(!approvalDocument.getDrafter().equals(userId)) {
-            throw new IllegalArgumentException("본인의 문서만 삭제할 수 있습니다.");
+            throw new BusinessException(ErrorCode.NOT_DRAFTER);
         }
 
         if(approvalDocument.getDocStatus() != DocStatusEnum.TEMP) {
-            throw new IllegalArgumentException("검토 중인 기안은 삭제할 수 없습니다.");
+            throw new BusinessException(ErrorCode.CANNOT_MODIFY_DOCUMENT);
         }
 
-        approvalDocument.deleteDocument();
+        return approvalDocument;
+    }
+
+    private ApprovalDocument validateDeleteAuthority(Long userId, Long docId) {
+        ApprovalDocument approvalDocument = approvalDocumentRepository.findById(docId).orElseThrow(
+                () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
+        );
+
+        if(!approvalDocument.getDrafter().equals(userId)) {
+            throw new BusinessException(ErrorCode.NOT_DRAFTER);
+        }
+
+        if(approvalDocument.getDocStatus() != DocStatusEnum.TEMP) {
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_DOCUMENT);
+        }
+
+        return approvalDocument;
     }
 }
