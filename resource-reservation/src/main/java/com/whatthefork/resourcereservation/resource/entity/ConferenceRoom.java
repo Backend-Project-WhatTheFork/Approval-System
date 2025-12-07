@@ -1,11 +1,8 @@
 package com.whatthefork.resourcereservation.resource.entity;
 
-import com.whatthefork.resourcereservation.resource.dto.request.ResourceRequest;
-import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
+import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateConferenceRoomRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Resources {
+public class ConferenceRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,36 +29,31 @@ public class Resources {
     @Column(nullable = false)
     private boolean isBooked = false;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ResourceCategory category;
-
     @Builder
-    public Resources(String name, int maxCapacity, ResourceCategory category) {
+    public ConferenceRoom(String name, int maxCapacity) {
         this.name = name;
         this.maxCapacity = maxCapacity;
-        this.category = category;
     }
 
-    public Resources updateName(String name) {
+    public ConferenceRoom updateName(String name) {
         this.name = name;
         return this;
     }
 
-    public Resources updateMaxCapacity(int maxCapacity) {
+    public ConferenceRoom updateMaxCapacity(int maxCapacity) {
         this.maxCapacity = maxCapacity;
         return this;
     }
 
-    public Resources updateIsBooked(boolean isBooked) {
+    public ConferenceRoom updateIsBooked(boolean isBooked) {
         this.isBooked = isBooked;
         return this;
     }
 
-    public Resources updateAll(ResourceRequest resourceRequest) {
-        this.name = resourceRequest.name();
-        this.maxCapacity = resourceRequest.maxCapacity();
-        this.isBooked = resourceRequest.isBooked();
+    public ConferenceRoom updateAll(UpdateConferenceRoomRequest roomRequest) {
+        this.name = roomRequest.name();
+        this.maxCapacity = roomRequest.maxCapacity();
+        this.isBooked = roomRequest.isBooked();
 
         return this;
     }
