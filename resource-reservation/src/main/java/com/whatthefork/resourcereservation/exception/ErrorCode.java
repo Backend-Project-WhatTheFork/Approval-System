@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // 자원 관련 오류
-    RESOURCE_NOT_FOUND("10001", "해당 자원 찾을 수 없음", HttpStatus.NOT_FOUND);
+    RESOURCE_NOT_FOUND("10001", "해당 자원 찾을 수 없음", HttpStatus.NOT_FOUND),
+
+    // 중복 예약
+    REDUNDANT_RESERVATION("10002", "해당 자원은 이미 예약되어 있음", HttpStatus.CONFLICT);
 
     ErrorCode(String code, String message, HttpStatus httpStatus) {
         this.code = code;

@@ -19,7 +19,7 @@ public class CanceledReservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;        // resource_management table의 pk 참조하는 fk이자 현 테이블의 pk
+    private Long id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String reason;

@@ -35,17 +35,19 @@ public class ReservationController {
         switch(reservationRequest.category()) {
             case CONFERENCE_ROOM -> { return ResponseEntity.ok(ApiResponse.success(reservationService.createRoomReservation(reservationRequest, userId))); }
             case CORPORATE_VEHICLE -> { return ResponseEntity.ok(ApiResponse.success(reservationService.createVehicleReservation(reservationRequest, userId))); }
-//            case SUPPLIES -> { return ResponseEntity.ok(ApiResponse.success(reservationService.createSupplyReservation(reservationRequest, userId))); }
+            case SUPPLIES -> { return ResponseEntity.ok(ApiResponse.success(reservationService.createSupplyReservation(reservationRequest, userId))); }
             default -> {return null;}
         }
     }
 
     // 예약 취소
-//    @PostMapping("/cancellations/{id}")
-//    public ResponseEntity<ApiResponse> cancelReservation(@PathVariable Long id) {
-//
-//        return ResponseEntity.ok(ApiResponse.success(reservationService.cancelReservation(id, userId)));
-//    }
+    @PostMapping("/cancellations/{id}")
+    public ResponseEntity<ApiResponse> cancelReservation(@PathVariable Long id) {
+
+        reservationService.cancelReservation(id);
+
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
 
     // 예약 수정
 //    @PatchMapping("/edit/{id}")
