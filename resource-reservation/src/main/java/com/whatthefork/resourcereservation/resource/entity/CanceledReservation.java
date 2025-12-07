@@ -21,6 +21,9 @@ public class CanceledReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private Long userId;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String reason;
 
@@ -28,9 +31,10 @@ public class CanceledReservation {
     private LocalDateTime canceledDate;
 
     @Builder
-    public CanceledReservation(String reason, LocalDateTime canceledDate) {
+    public CanceledReservation(String reason, LocalDateTime canceledDate, Long userId) {
         this.reason = reason;
         this.canceledDate = canceledDate;
+        this.userId = userId;
     }
 
     public CanceledReservation updateReason(String reason) {

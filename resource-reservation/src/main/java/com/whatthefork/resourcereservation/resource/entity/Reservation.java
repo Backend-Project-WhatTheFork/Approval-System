@@ -1,5 +1,6 @@
 package com.whatthefork.resourcereservation.resource.entity;
 
+import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateReservationRequest;
 import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,6 +47,9 @@ public class Reservation {
     @Column(nullable = false)
     private ResourceCategory category;
 
+    @Column(nullable = false)
+    private boolean isExpired = false;
+
     @Builder
     public Reservation(Long userId, Long resourceId, LocalDateTime bookedDate, LocalDateTime startDate, LocalDateTime endDate, int capacity, String reason, ResourceCategory category) {
         this.userId = userId;
@@ -80,6 +84,23 @@ public class Reservation {
 
     public Reservation updateCapacity(int capacity) {
         this.capacity = capacity;
+        return this;
+    }
+
+    public Reservation updateIsExpired(boolean isExpired) {
+        this.isExpired = isExpired;
+        return this;
+    }
+
+    public Reservation updateAll(UpdateReservationRequest reservation) {
+        this.resourceId = reservation.resourceId();
+        this.bookedDate = reservation.bookedDate();
+        this.startDate = reservation.startDate();
+        this.endDate = reservation.endDate();
+        this.capacity = reservation.capacity();
+        this.reason = reservation.reason();
+        this.category = reservation.category();
+
         return this;
     }
 }

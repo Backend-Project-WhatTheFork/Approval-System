@@ -3,6 +3,8 @@ package com.whatthefork.resourcereservation.resource.service;
 import com.whatthefork.resourcereservation.exception.BusinessException;
 import com.whatthefork.resourcereservation.exception.ErrorCode;
 import com.whatthefork.resourcereservation.resource.dto.request.create.CreateReservationRequest;
+import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateCorporateCarRequest;
+import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateReservationRequest;
 import com.whatthefork.resourcereservation.resource.dto.response.CanceledReservationResponse;
 import com.whatthefork.resourcereservation.resource.dto.response.ConferenceRoomResponse;
 import com.whatthefork.resourcereservation.resource.dto.response.CorporateCarResponse;
@@ -86,6 +88,7 @@ public class ReservationService {
         return reservationAndConferenceRoom;
     }
 
+    @Transactional
     public ReservationAndCorporateCar createVehicleReservation(CreateReservationRequest reservationRequest, Long userId) {
 
         ReservationResponse response = new ReservationResponse(reservationRepository.save(
@@ -121,6 +124,7 @@ public class ReservationService {
         return reservationAndCorporateCar;
     }
 
+    @Transactional
     public ReservationAndSupply createSupplyReservation(CreateReservationRequest reservationRequest, Long userId) {
 
         ReservationResponse response = new ReservationResponse(reservationRepository.save(
@@ -156,7 +160,8 @@ public class ReservationService {
         return reservationAndSupply;
     }
 
-    public CanceledReservationResponse cancelReservation(Long id) {
+    @Transactional
+    public CanceledReservationResponse cancelReservation(Long id, Long userId) {
 
         // 취소할 예약 가져오기
         Reservation reservation = reservationRepository.findById(id)
@@ -166,6 +171,7 @@ public class ReservationService {
         CanceledReservation canceledReservation = cancelRepository.save(CanceledReservation.builder()
                         .reason(reservation.getReason())
                         .canceledDate(LocalDateTime.now())
+                        .userId(userId)
                         .build()
                 );
 
@@ -198,5 +204,45 @@ public class ReservationService {
         reservationRepository.deleteById(id);
 
         return new CanceledReservationResponse(canceledReservation);
+    }
+
+    // 예약 수정
+    @Transactional
+    public ReservationResponse editReservation(UpdateReservationRequest request, Long id) {
+
+        return new ReservationResponse(reservationRepository.save(
+                reservationRepository.findById(id)
+                        .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND))
+                        .updateAll(request)
+        ));
+    }
+
+    // 만료 예약 확인
+    @Transactional
+    public List<ReservationResponse> getExpiredReservations(Long userId) {
+        log.info("get in");
+
+        List<Reservation> allReservations = reservationRepository.findAllByUserId(userId);
+
+        List<Reservation> expiredReservations = allReservations.stream()
+                .filter(reservation -> {
+                    if (reservation.getEndDate().isBefore(LocalDateTime.now())) {
+                        reservation.updateIsExpired(true);
+                        return true;
+                    }
+                    return false;
+                })
+                .toList();
+
+        return expiredReservations.stream()
+                .map(ReservationResponse::new)
+                .toList();
+    }
+
+    public List<CanceledReservationResponse> getCanceledReservations(Long userId) {
+
+        return cancelRepository.findAllByUserId(userId).stream()
+                .map(CanceledReservationResponse::new)
+                .toList();
     }
 }

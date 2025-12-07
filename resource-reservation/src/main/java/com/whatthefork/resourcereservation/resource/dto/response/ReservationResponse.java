@@ -33,7 +33,10 @@ public record ReservationResponse(
     String reason,
 
     @NotNull
-    ResourceCategory category
+    ResourceCategory category,
+
+    @NotNull
+    boolean isExpired
 ) {
     public ReservationResponse(Reservation management) {
         this(
@@ -45,7 +48,8 @@ public record ReservationResponse(
                 management.getEndDate(),
                 management.getCapacity(),
                 management.getReason(),
-                management.getCategory()
+                management.getCategory(),
+                management.isExpired()
         );
     }
 }

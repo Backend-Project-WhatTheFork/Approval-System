@@ -2,6 +2,7 @@ package com.whatthefork.resourcereservation.resource.controller;
 
 import com.whatthefork.resourcereservation.common.ApiResponse;
 import com.whatthefork.resourcereservation.resource.dto.request.create.CreateReservationRequest;
+import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateReservationRequest;
 import com.whatthefork.resourcereservation.resource.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,29 +45,29 @@ public class ReservationController {
     @PostMapping("/cancellations/{id}")
     public ResponseEntity<ApiResponse> cancelReservation(@PathVariable Long id) {
 
-        reservationService.cancelReservation(id);
+        reservationService.cancelReservation(id, userId);
 
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     // 예약 수정
-//    @PatchMapping("/edit/{id}")
-//    public ResponseEntity<ApiResponse> editReservation(@PathVariable Long id) {
-//
-//        return ResponseEntity.ok(ApiResponse.success(reservationService.editReservation(id)));
-//    }
+    @PatchMapping("/edit/{id}")
+    public ResponseEntity<ApiResponse> editReservation(@PathVariable Long id, @RequestBody UpdateReservationRequest reservationRequest) {
+
+        return ResponseEntity.ok(ApiResponse.success(reservationService.editReservation(reservationRequest, id)));
+    }
 
     // 내 만료 예약 목록 확인
-//    @GetMapping("/expired")
-//    public ResponseEntity<ApiResponse> expiredReservations() {
-//
-//        return ResponseEntity.ok(ApiResponse.success(reservationService.getExpiredReservations(userId)));
-//    }
+    @GetMapping("/expired")
+    public ResponseEntity<ApiResponse> expiredReservations() {
+
+        return ResponseEntity.ok(ApiResponse.success(reservationService.getExpiredReservations(userId)));
+    }
 
     // 내 취소 예약 목록 확인
-//    @GetMapping("/canceled")
-//    public ResponseEntity<ApiResponse> canceledReservations() {
-//
-//        return ResponseEntity.ok(ApiResponse.success(reservationService.getCanceledReservations(userId)));
-//    }
+    @GetMapping("/canceled")
+    public ResponseEntity<ApiResponse> canceledReservations() {
+
+        return ResponseEntity.ok(ApiResponse.success(reservationService.getCanceledReservations(userId)));
+    }
 }
