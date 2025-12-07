@@ -1,5 +1,6 @@
 package com.whatthefork.resourcereservation.resource.entity;
 
+import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ResourceManagement {
+public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,8 +43,11 @@ public class ResourceManagement {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String reason;
 
+    @Column(nullable = false)
+    private ResourceCategory category;
+
     @Builder
-    public ResourceManagement(Long userId, Long resourceId, LocalDateTime bookedDate, LocalDateTime startDate, LocalDateTime endDate, int capacity, String reason) {
+    public Reservation(Long userId, Long resourceId, LocalDateTime bookedDate, LocalDateTime startDate, LocalDateTime endDate, int capacity, String reason, ResourceCategory category) {
         this.userId = userId;
         this.resourceId = resourceId;
         this.bookedDate = bookedDate;
@@ -51,29 +55,30 @@ public class ResourceManagement {
         this.endDate = endDate;
         this.capacity = capacity;
         this.reason = reason;
+        this.category = category;
     }
 
-    public ResourceManagement updateBookedDate(LocalDateTime bookedDate) {
+    public Reservation updateBookedDate(LocalDateTime bookedDate) {
         this.bookedDate = bookedDate;
         return this;
     }
 
-    public ResourceManagement updateStartDate(LocalDateTime startDate) {
+    public Reservation updateStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
         return this;
     }
 
-    public ResourceManagement updateEndDate(LocalDateTime endDate) {
+    public Reservation updateEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
         return this;
     }
 
-    public ResourceManagement updateReason(String reason) {
+    public Reservation updateReason(String reason) {
         this.reason = reason;
         return this;
     }
 
-    public ResourceManagement updateCapacity(int capacity) {
+    public Reservation updateCapacity(int capacity) {
         this.capacity = capacity;
         return this;
     }
