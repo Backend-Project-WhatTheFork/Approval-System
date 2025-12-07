@@ -4,7 +4,6 @@ import com.whatthefork.resourcereservation.common.ApiResponse;
 import com.whatthefork.resourcereservation.resource.dto.request.create.CreateConferenceRoomRequest;
 import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateConferenceRoomRequest;
 import com.whatthefork.resourcereservation.resource.dto.response.ConferenceRoomResponse;
-import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import com.whatthefork.resourcereservation.resource.service.ConferenceRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -6,7 +6,6 @@ import com.whatthefork.resourcereservation.resource.dto.request.create.CreateCon
 import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateConferenceRoomRequest;
 import com.whatthefork.resourcereservation.resource.dto.response.ConferenceRoomResponse;
 import com.whatthefork.resourcereservation.resource.entity.ConferenceRoom;
-import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import com.whatthefork.resourcereservation.resource.repository.ConferenceRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
