@@ -5,20 +5,16 @@ import com.whatthefork.approvalsystem.dto.request.CreateDocumentRequestDto;
 import com.whatthefork.approvalsystem.dto.request.UpdateDocumentRequestDto;
 import com.whatthefork.approvalsystem.service.DocumentService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/document")
+@RequiredArgsConstructor
 public class DocumentController {
 
-    @Autowired
     private final DocumentService documentService;
-
-    public DocumentController(DocumentService documentService) {
-        this.documentService = documentService;
-    }
 
     /* 12.06 모든 메소드의 매개변수에 userId 대신 @AuthenticationPrincipal UserDetailsImpl로 로그인된 사용자 정보에서 Id 추출할 예정. 현재는 임시 기입 */
     @PostMapping("/drafting")
