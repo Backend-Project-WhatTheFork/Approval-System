@@ -4,6 +4,7 @@ import com.whatthefork.resourcereservation.common.ApiResponse;
 import com.whatthefork.resourcereservation.resource.dto.request.ResourceRequest;
 import com.whatthefork.resourcereservation.resource.dto.response.ResourceResponse;
 import com.whatthefork.resourcereservation.resource.entity.Resources;
+import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import com.whatthefork.resourcereservation.resource.service.ResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -57,9 +58,15 @@ public class ConferenceRoomController {
         return ResponseEntity.ok(ApiResponse.success(resourceService.updateResourceById(id, resources)));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> getConferenceRoomById(@PathVariable Long id) {
+    @GetMapping("/name/{name}")
+    public ResponseEntity<ApiResponse> getConferenceRoomById(@PathVariable String name) {
 
-        return ResponseEntity.ok(ApiResponse.success(resourceService.getResourceById(id)));
+        return ResponseEntity.ok(ApiResponse.success(resourceService.getResourceByName(name)));
+    }
+
+    @GetMapping("/maxCapacity/{maxCapacity}")
+    public ResponseEntity<ApiResponse> getConferenceRoomByMaxCapacity(@PathVariable int maxCapacity) {
+
+        return ResponseEntity.ok(ApiResponse.success(resourceService.getResourceByMaxCapacity(maxCapacity, ResourceCategory.CONFERENCE_ROOM)));
     }
 }

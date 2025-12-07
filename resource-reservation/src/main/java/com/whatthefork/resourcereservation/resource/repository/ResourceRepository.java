@@ -16,4 +16,8 @@ public interface ResourceRepository {
     void deleteById(Long id);
 
     Optional<Resources> findById(Long id);
+
+    Optional<Resources> findByName(String name);
+
+    Resources findByMaxCapacityAndCategory(int maxCapacity, ResourceCategory resourceCategory);
 }

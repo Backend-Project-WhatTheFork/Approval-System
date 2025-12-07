@@ -65,4 +65,16 @@ public class ResourceService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND))
         );
     }
+
+    public ResourceRequest getResourceByName(String name) {
+
+        return new ResourceRequest(resourceRepository.findByName(name)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RESOURCE_NOT_FOUND))
+        );
+    }
+
+    public ResourceRequest getResourceByMaxCapacity(int maxCapacity, ResourceCategory resourceCategory) {
+
+        return new ResourceRequest(resourceRepository.findByMaxCapacityAndCategory(maxCapacity, resourceCategory));
+    }
 }
