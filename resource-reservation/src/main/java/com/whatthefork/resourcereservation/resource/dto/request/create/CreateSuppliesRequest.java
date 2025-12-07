@@ -7,10 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 
 public record CreateSuppliesRequest (
 
-        @NotBlank
+        @NotBlank(message = "추가할 비품의 이름을 입력하세요.")
         String name,
 
-        @Min(1)
+        @Min(value = 1, message = "비품은 1개 이상 등록 가능합니다.")
         int capacity
 ) {
     public CreateSuppliesRequest(Supplies supplies) {
