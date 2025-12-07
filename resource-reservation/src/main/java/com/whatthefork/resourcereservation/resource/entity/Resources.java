@@ -1,5 +1,6 @@
 package com.whatthefork.resourcereservation.resource.entity;
 
+import com.whatthefork.resourcereservation.resource.dto.request.ResourceRequest;
 import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -54,6 +55,14 @@ public class Resources {
 
     public Resources updateIsBooked(boolean isBooked) {
         this.isBooked = isBooked;
+        return this;
+    }
+
+    public Resources updateAll(ResourceRequest resourceRequest) {
+        this.name = resourceRequest.name();
+        this.maxCapacity = resourceRequest.maxCapacity();
+        this.isBooked = resourceRequest.isBooked();
+
         return this;
     }
 }
