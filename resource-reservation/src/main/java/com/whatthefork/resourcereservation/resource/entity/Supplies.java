@@ -1,6 +1,6 @@
 package com.whatthefork.resourcereservation.resource.entity;
 
-import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateConferenceRoomRequest;
+import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateSuppliesRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ConferenceRoom {
+public class Supplies {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,36 +24,31 @@ public class ConferenceRoom {
     private String name;
 
     @Column(nullable = false)
-    private int maxCapacity;
+    private int capacity;
 
     @Column(nullable = false)
     private boolean isBooked = false;
 
     @Builder
-    public ConferenceRoom(String name, int maxCapacity) {
+    public Supplies(String name, int capacity) {
         this.name = name;
-        this.maxCapacity = maxCapacity;
+        this.capacity = capacity;
     }
 
-    public ConferenceRoom updateName(String name) {
+    public Supplies updateName(String name) {
         this.name = name;
         return this;
     }
 
-    public ConferenceRoom updateMaxCapacity(int maxCapacity) {
-        this.maxCapacity = maxCapacity;
-        return this;
-    }
-
-    public ConferenceRoom updateIsBooked(boolean isBooked) {
+    public Supplies updateIsBooked(boolean isBooked) {
         this.isBooked = isBooked;
         return this;
     }
 
-    public ConferenceRoom updateAll(UpdateConferenceRoomRequest roomRequest) {
-        this.name = roomRequest.name();
-        this.maxCapacity = roomRequest.maxCapacity();
-        this.isBooked = roomRequest.isBooked();
+    public Supplies updateAll(UpdateSuppliesRequest suppliesRequest) {
+        this.name = suppliesRequest.name();
+        this.capacity = suppliesRequest.capacity();
+        this.isBooked = suppliesRequest.isBooked();
 
         return this;
     }
