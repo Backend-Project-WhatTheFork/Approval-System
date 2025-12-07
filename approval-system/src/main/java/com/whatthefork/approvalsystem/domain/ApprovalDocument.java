@@ -86,4 +86,12 @@ public class ApprovalDocument {
     public void deleteDocument() {
         this.isDeleted = true;
     }
+
+    public boolean isSameDrafter(Long userId) {
+        return this.drafter.equals(userId);
+    }
+
+    public boolean isTempStatus() {
+        return this.docStatus == DocStatusEnum.TEMP;
+    }
 }

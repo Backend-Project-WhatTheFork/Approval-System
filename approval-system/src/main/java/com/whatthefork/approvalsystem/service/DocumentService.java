@@ -35,6 +35,10 @@ public class DocumentService {
     @Transactional
     public Long createDocument(Long userId, CreateDocumentRequestDto requestDto) {
 
+        // 결재선 저장
+        List<Long> approvalIds = requestDto.getApproverIds();
+        validateApproverList(approvalIds);
+
         /* (추후 구현) memberRepository에서 해당 멤버가 존재하는지 getDraftId로 판독 */
 
         // 기안 작성
@@ -53,31 +57,8 @@ public class DocumentService {
         ApprovalDocument savedDoc = approvalDocumentRepository.save(approvalDocument);
         Long documentId = savedDoc.getId();
 
-        // 결재선 저장
-        List<Long> approvalIds = requestDto.getApproverIds();
-
-        if(approvalIds == null || approvalIds.isEmpty()) {
-            throw new IllegalArgumentException("결재자가 지정되지 않았습니다.");
-        }
-
-        if(approvalIds.size() == 3) {
-            for (int i = 0; i < requestDto.getApproverIds().size(); i++) {
-                Long approvalId = requestDto.getApproverIds().get(i);
-
-                /* (추후 구현) MemberRepository로 결재자 ID가 존재하는지 검증 */
-
-                ApprovalLine approvalLine = ApprovalLine.builder()
-                                .document(documentId)
-                                .approver(approvalId)
-                                .lineStatus(LineStatusEnum.WAIT)
-                                .sequence(i + 1)
-                                .build();
-
-                approvalLineRepository.save(approvalLine);
-            }
-        } else {
-            throw new IllegalArgumentException("결재자 3명이 지정되지 않았습니다.");
-        }
+        // 결재선 등록
+        createApprovalLines(documentId, approvalIds);
 
         // 참조자 설정
         if(requestDto.getReferrer() != null) {
@@ -107,9 +88,7 @@ public class DocumentService {
     @Transactional
     public void updateDocument(Long userId, Long docId, UpdateDocumentRequestDto requestDto) {
         List<Long> approvalIds = requestDto.getApproverIds();
-        if(approvalIds == null || approvalIds.size() != 3) {
-            throw new IllegalArgumentException("결재자 3명이 지정되지 않았습니다.");
-        }
+        validateApproverList(approvalIds);
 
         ApprovalDocument approvalDocument = validateUpdateAuthority(userId, docId);
 
@@ -121,21 +100,7 @@ public class DocumentService {
         );
 
         approvalLineRepository.deleteByDocumentId(docId);
-
-        for(int i = 0; i < approvalIds.size(); i++) {
-            /* memberRepository로 결재자 검증 로직 필요 */
-
-            Long approvalId = requestDto.getApproverIds().get(i);
-
-            ApprovalLine newLine = ApprovalLine.builder()
-                    .document(docId)
-                    .approver(approvalId)
-                    .lineStatus(LineStatusEnum.WAIT)
-                    .sequence(i + 1)
-                    .build();
-
-            approvalLineRepository.save(newLine);
-        }
+        createApprovalLines(docId, approvalIds);
     }
 
     @Transactional
@@ -149,11 +114,11 @@ public class DocumentService {
                 () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
         );
 
-        if(!approvalDocument.getDrafter().equals(userId)) {
+        if(!approvalDocument.isSameDrafter(userId)) {
             throw new BusinessException(ErrorCode.NOT_DRAFTER);
         }
 
-        if(approvalDocument.getDocStatus() != DocStatusEnum.TEMP) {
+        if(!approvalDocument.isTempStatus()) {
             throw new BusinessException(ErrorCode.CANNOT_MODIFY_DOCUMENT);
         }
 
@@ -165,14 +130,38 @@ public class DocumentService {
                 () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
         );
 
-        if(!approvalDocument.getDrafter().equals(userId)) {
+        if(!approvalDocument.isSameDrafter(userId)) {
             throw new BusinessException(ErrorCode.NOT_DRAFTER);
         }
 
-        if(approvalDocument.getDocStatus() != DocStatusEnum.TEMP) {
+        if(!approvalDocument.isTempStatus()) {
             throw new BusinessException(ErrorCode.CANNOT_DELETE_DOCUMENT);
         }
 
         return approvalDocument;
+    }
+
+    private void validateApproverList(List<Long> approvalIds) {
+        if (approvalIds == null || approvalIds.isEmpty()) {
+            throw new BusinessException(ErrorCode.APPROVER_REQUIRED);
+        }
+
+        if (approvalIds.size() != 3) {
+            throw new BusinessException(ErrorCode.INVALID_APPROVER_COUNT);
+        }
+    }
+
+    private void createApprovalLines(Long docId, List<Long> approvalIds) {
+
+        for(int i = 0; i < approvalIds.size(); i++) {
+            ApprovalLine newLine = ApprovalLine.builder()
+                    .document(docId)
+                    .approver(approvalIds.get(i))
+                    .lineStatus(LineStatusEnum.WAIT)
+                    .sequence(i + 1)
+                    .build();
+
+            approvalLineRepository.save(newLine);
+        }
     }
 }
