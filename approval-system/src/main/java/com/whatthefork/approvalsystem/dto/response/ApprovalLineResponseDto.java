@@ -1,6 +1,6 @@
-package com.approvalsystem.dto.response;
+package com.whatthefork.approvalsystem.dto.response;
 
-import com.approvalsystem.enums.LineStatusEnum;
+import com.whatthefork.approvalsystem.enums.LineStatusEnum;
 import lombok.Builder;
 import lombok.Getter;
 

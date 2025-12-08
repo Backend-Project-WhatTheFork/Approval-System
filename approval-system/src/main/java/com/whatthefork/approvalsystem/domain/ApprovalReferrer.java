@@ -1,4 +1,4 @@
-package com.approvalsystem.domain;
+package com.whatthefork.approvalsystem.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

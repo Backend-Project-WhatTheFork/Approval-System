@@ -1,4 +1,4 @@
-package com.approvalsystem.domain.member;
+package com.whatthefork.approvalsystem.domain.member;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

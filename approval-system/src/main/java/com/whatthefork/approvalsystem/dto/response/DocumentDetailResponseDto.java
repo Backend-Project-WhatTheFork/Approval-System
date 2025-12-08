@@ -1,6 +1,6 @@
-package com.approvalsystem.dto.response;
+package com.whatthefork.approvalsystem.dto.response;
 
-import com.approvalsystem.enums.DocStatusEnum;
+import com.whatthefork.approvalsystem.enums.DocStatusEnum;
 import lombok.Builder;
 import lombok.Getter;
 

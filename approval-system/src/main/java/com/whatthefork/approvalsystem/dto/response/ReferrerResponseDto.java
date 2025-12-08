@@ -1,4 +1,4 @@
-package com.approvalsystem.dto.response;
+package com.whatthefork.approvalsystem.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
