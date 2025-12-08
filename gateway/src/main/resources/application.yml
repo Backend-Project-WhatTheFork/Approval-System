@@ -9,48 +9,51 @@ spring:
       server:
         webflux:
           routes:
-            - id: user-service
-              uri: lb://auth-and-security
+            - id: auth-and-security
+              uri: lb://AUTH-AND-SECURITY
               predicates:
-                - Path=/api/v1/user-service/**
+                - Path=/api/v1/auth-and-security/**
               filters:
-                - RewritePath=/api/v1/user-service/(?<segment>.*), /$\{segment}
+                - RewritePath=/api/v1/auth-and-security/(?<segment>.*), /$\{segment}
             - id: approval-system
-              uri: lb://approval-system
+              uri: lb://APPROVAL-SYSTEM
               predicates:
                 - Path=/api/v1/approval-system/**
               filters:
                 - RewritePath=/api/v1/approval-system/(?<segment>.*), /$\{segment}
             - id: attendance-tracking
-              uri: lb://attendance-tracking
+              uri: lb://ATTENDANCE-TRACKING
               predicates:
-                - Path=/api/v1/approval-system/**
+                - Path=/api/v1/attendance-tracking/**
               filters:
                 - RewritePath=/api/v1/attendance-tracking/(?<segment>.*), /$\{segment}
             - id: communication-and-alarm
-              uri: lb://communication-and-alarm
+              uri: lb://COMMUNICATION-AND-ALARM
               predicates:
                 - Path=/api/v1/communication-and-alarm/**
               filters:
                 - RewritePath=/api/v1/communication-and-alarm/(?<segment>.*), /$\{segment}
             - id: resource-reservation
-              uri: lb://resource-reservation
+              uri: lb://RESOURCE-RESERVATION
               predicates:
                 - Path=/api/v1/resource-reservation/**
               filters:
                 - RewritePath=/api/v1/resource-reservation/(?<segment>.*), /$\{segment}
-            - id: EurekaServer
-              uri: lb://eureka-server
+            - id: user-service
+              uri: lb://USER-SERVICE
               predicates:
-                - Path=/api/v1/eureka-server/**
+                - Path=/api/v1/user-service/**
               filters:
-                - RewritePath=/api/v1/eureka-server/(?<segment>.*), /$\{segment}
+                - RewritePath=/api/v1/user-service/(?<segment>.*), /$\{segment}
+
 
 eureka:
   client:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8766/eureka
+      defaultZone: http://localhost:8761/eureka
+
 jwt:
   secret: +i12AQFwws/Del1pGAOB0imXQLGaCNd7dyMF41Mxe6k=
+  expiration: 86400000
