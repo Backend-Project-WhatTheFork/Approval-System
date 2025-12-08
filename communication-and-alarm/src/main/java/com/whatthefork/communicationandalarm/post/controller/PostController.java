@@ -3,6 +3,7 @@ package com.whatthefork.communicationandalarm.post.controller;
 import com.whatthefork.communicationandalarm.common.ApiResponse;
 import com.whatthefork.communicationandalarm.common.dto.request.CreatePostRequest;
 import com.whatthefork.communicationandalarm.common.dto.request.UpdatePostRequest;
+import com.whatthefork.communicationandalarm.common.dto.response.GetPostResponse;
 import com.whatthefork.communicationandalarm.common.dto.response.PostResponse;
 import com.whatthefork.communicationandalarm.post.domain.PostService;
 import jakarta.validation.Valid;
@@ -60,12 +61,12 @@ public class PostController {
     /*
     * 게시물 조회
     * */
-    @GetMapping("/{postId}")
-    public ResponseEntity<ApiResponse<PostResponse>> getPost(
-            @RequestParam Long memberId,
-            @PathVariable("postId") Long postId
-    ) {
-        PostResponse postResponse = postService.get(memberId, postId);
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(postResponse));
-    }
+//    @GetMapping("/{postId}")
+//    public ResponseEntity<ApiResponse<PostResponse>> getPost(
+//            @RequestParam Long memberId,
+//            @PathVariable("postId") Long postId
+//    ) {
+//        GetPostResponse response = postService.getPost(postId, memberId);
+//        return ApiResponse.success(response);
+//    }
 }

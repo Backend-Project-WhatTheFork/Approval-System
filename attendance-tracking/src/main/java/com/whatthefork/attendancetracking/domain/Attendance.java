@@ -25,7 +25,7 @@ public class Attendance {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private Long memberId;
 
     @Column(name = "punch_in", nullable = true)
     private LocalDateTime punchInDate;
@@ -48,8 +48,8 @@ public class Attendance {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Attendance(Long userId, LocalDateTime punchInDate, LocalDateTime punchOutDate, boolean isLate, Integer overtimeMinutes) {
-        this.userId = userId;
+    public Attendance(Long memberId, LocalDateTime punchInDate, LocalDateTime punchOutDate, boolean isLate, Integer overtimeMinutes) {
+        this.memberId = memberId;
         this.punchInDate = punchInDate;
         this.punchOutDate = punchOutDate;
         this.isLate = isLate;

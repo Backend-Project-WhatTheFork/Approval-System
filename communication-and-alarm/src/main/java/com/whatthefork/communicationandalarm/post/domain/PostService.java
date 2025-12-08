@@ -2,6 +2,7 @@ package com.whatthefork.communicationandalarm.post.domain;
 
 import com.whatthefork.communicationandalarm.common.dto.request.CreatePostRequest;
 import com.whatthefork.communicationandalarm.common.dto.request.UpdatePostRequest;
+import com.whatthefork.communicationandalarm.common.dto.response.GetPostResponse;
 import com.whatthefork.communicationandalarm.common.dto.response.PostResponse;
 import com.whatthefork.communicationandalarm.common.exception.ErrorCode;
 import com.whatthefork.communicationandalarm.common.exception.GlobalException;
@@ -69,7 +70,7 @@ public class PostService {
     * 게시글 조회
     * */
     @Transactional
-    public PostResponse get(Long memberId, Long postId) {
+    public GetPostResponse get(Long memberId, Long postId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
 
@@ -77,6 +78,6 @@ public class PostService {
         postRepository.save(viewLog);
 
         Long viewCount = postRepository.countViewsByPostId(postId);
-        return PostResponse.from(post, viewCount, viewCount);
+        return GetPostResponse.of(post, viewCount);
     }
 }

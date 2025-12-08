@@ -22,7 +22,7 @@ public class ResourceManagement {
     private Long id;
 
     @Column(nullable = false)
-    private Long userId;                // user table의 pk 참조하는 fk
+    private Long memberId;                // user table의 pk 참조하는 fk
 
     @Column(nullable = false)
     private Long resourceId;            // resource table의 pk 참조하는 fk
@@ -43,8 +43,8 @@ public class ResourceManagement {
     private String reason;
 
     @Builder
-    public ResourceManagement(Long userId, Long resourceId, LocalDateTime bookedDate, LocalDateTime startDate, LocalDateTime endDate, int capacity, String reason) {
-        this.userId = userId;
+    public ResourceManagement(Long memberId, Long resourceId, LocalDateTime bookedDate, LocalDateTime startDate, LocalDateTime endDate, int capacity, String reason) {
+        this.memberId = memberId;
         this.resourceId = resourceId;
         this.bookedDate = bookedDate;
         this.startDate = startDate;
