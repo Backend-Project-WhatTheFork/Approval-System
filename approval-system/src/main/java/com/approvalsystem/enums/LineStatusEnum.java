@@ -1,4 +1,4 @@
-package com.whatthefork.approvalsystem.enums;
+package com.approvalsystem.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

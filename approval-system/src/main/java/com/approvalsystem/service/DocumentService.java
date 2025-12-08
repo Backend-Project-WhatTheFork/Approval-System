@@ -1,28 +1,29 @@
-package com.whatthefork.approvalsystem.service;
+package com.approvalsystem.service;
 
-import com.whatthefork.approvalsystem.common.error.BusinessException;
-import com.whatthefork.approvalsystem.common.error.ErrorCode;
-import com.whatthefork.approvalsystem.domain.ApprovalDocument;
-import com.whatthefork.approvalsystem.domain.ApprovalHistory;
-import com.whatthefork.approvalsystem.domain.ApprovalLine;
-import com.whatthefork.approvalsystem.domain.ApprovalReferrer;
-import com.whatthefork.approvalsystem.domain.member.MemberRepository;
-import com.whatthefork.approvalsystem.dto.request.CreateDocumentRequestDto;
-import com.whatthefork.approvalsystem.dto.request.UpdateDocumentRequestDto;
-import com.whatthefork.approvalsystem.dto.response.ApprovalLineResponseDto;
-import com.whatthefork.approvalsystem.dto.response.DocumentDetailResponseDto;
-import com.whatthefork.approvalsystem.dto.response.DocumentListResponseDto;
-import com.whatthefork.approvalsystem.dto.response.ReferrerResponseDto;
-import com.whatthefork.approvalsystem.enums.ActionTypeEnum;
-import com.whatthefork.approvalsystem.enums.DocStatusEnum;
-import com.whatthefork.approvalsystem.enums.LineStatusEnum;
-import com.whatthefork.approvalsystem.repository.ApprovalDocumentRepository;
-import com.whatthefork.approvalsystem.repository.ApprovalHistoryRepositoy;
-import com.whatthefork.approvalsystem.repository.ApprovalLineRepository;
-import com.whatthefork.approvalsystem.repository.ApprovalReferrerRepository;
+import com.approvalsystem.common.error.BusinessException;
+import com.approvalsystem.common.error.ErrorCode;
+import com.approvalsystem.domain.ApprovalDocument;
+import com.approvalsystem.domain.ApprovalHistory;
+import com.approvalsystem.domain.ApprovalLine;
+import com.approvalsystem.domain.ApprovalReferrer;
+import com.approvalsystem.domain.member.MemberRepository;
+import com.approvalsystem.dto.request.CreateDocumentRequestDto;
+import com.approvalsystem.dto.request.UpdateDocumentRequestDto;
+import com.approvalsystem.dto.response.ApprovalLineResponseDto;
+import com.approvalsystem.dto.response.DocumentDetailResponseDto;
+import com.approvalsystem.dto.response.DocumentListResponseDto;
+import com.approvalsystem.dto.response.ReferrerResponseDto;
+import com.approvalsystem.enums.ActionTypeEnum;
+import com.approvalsystem.enums.DocStatusEnum;
+import com.approvalsystem.enums.LineStatusEnum;
+import com.approvalsystem.repository.ApprovalDocumentRepository;
+import com.approvalsystem.repository.ApprovalHistoryRepositoy;
+import com.approvalsystem.repository.ApprovalLineRepository;
+import com.approvalsystem.repository.ApprovalReferrerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -289,6 +290,37 @@ public class DocumentService {
                         .createdDate(document.getCreatedAt())
                         .build()
                 );
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DocumentListResponseDto> getProgressDocumentList(Long memberId, Pageable pageable) {
+        Page<ApprovalDocument> documentList = approvalDocumentRepository.findByDocStatusAndDrafterOrderByCreatedAtDesc(DocStatusEnum.IN_PROGRESS, memberId, pageable);
+
+        return documentList.map(document ->
+                DocumentListResponseDto.builder()
+                        .documentId(document.getId())
+                        .title(document.getTitle())
+                        .status(document.getDocStatus())
+                        .createdDate(document.getCreatedAt())
+                        .build()
+        );
+    }
+
+
+    @Transactional(readOnly = true)
+    public Page<DocumentListResponseDto> getClosedDocumentList(Long memberId, Pageable pageable) {
+        List<DocStatusEnum> statuses = Arrays.asList(DocStatusEnum.APPROVED, DocStatusEnum.REJECTED);
+
+        Page<ApprovalDocument> documentList = approvalDocumentRepository.findByDocStatusAndDocStatusIn(statuses, memberId, pageable);
+
+        return documentList.map(document ->
+                DocumentListResponseDto.builder()
+                        .documentId(document.getId())
+                        .title(document.getTitle())
+                        .status(document.getDocStatus())
+                        .createdDate(document.getCreatedAt())
+                        .build()
+        );
     }
 
     private ApprovalDocument validateUpdateAuthority(Long userId, Long docId) {
