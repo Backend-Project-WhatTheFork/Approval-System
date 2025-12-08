@@ -6,6 +6,7 @@ import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateRes
 import com.whatthefork.resourcereservation.resource.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,10 +44,11 @@ public class ReservationController {
     }
 
     // 예약 취소
-    @PostMapping("/cancellations/{id}")
-    public ResponseEntity<ApiResponse> cancelReservation(@PathVariable Long id) {
+    @PostMapping("/cancellations/{reservationId}")
+//    @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isReservationOwner(principal.username, #userId)")
+    public ResponseEntity<ApiResponse> cancelReservation(@PathVariable Long reservationId) {
 
-        return ResponseEntity.ok(ApiResponse.success(reservationService.cancelReservation(id, userId)));
+        return ResponseEntity.ok(ApiResponse.success(reservationService.cancelReservation(reservationId, userId)));
     }
 
     // 예약 수정

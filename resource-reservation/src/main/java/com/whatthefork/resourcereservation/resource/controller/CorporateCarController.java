@@ -8,6 +8,7 @@ import com.whatthefork.resourcereservation.resource.service.CorporateCarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,6 +42,7 @@ public class CorporateCarController {
 
     // 법인차량 추가
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> createCorporateCar(@RequestBody CreateCorporateCarRequest corporateCarRequest) {
         log.info("create corporate car: {}", corporateCarRequest);
 
@@ -49,6 +51,7 @@ public class CorporateCarController {
 
     // 법인차량 삭제
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteCorporateCar(@PathVariable Long id) {
         log.info("delete corporate car: {}", id);
 
@@ -59,6 +62,7 @@ public class CorporateCarController {
 
     // 법인차량 정보 수정
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateCorporateCar(@PathVariable Long id, @RequestBody UpdateCorporateCarRequest corporateCarRequest) {
         log.info("update corporate car: {}", corporateCarRequest);
 
