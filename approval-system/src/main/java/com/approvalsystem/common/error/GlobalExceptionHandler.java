@@ -1,4 +1,4 @@
-package com.whatthefork.approvalsystem.common.error;
+package com.approvalsystem.common.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

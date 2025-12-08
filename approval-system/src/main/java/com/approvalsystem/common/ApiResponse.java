@@ -1,4 +1,4 @@
-package com.whatthefork.approvalsystem.common;
+package com.approvalsystem.common;
 
 import lombok.Builder;
 import lombok.Getter;

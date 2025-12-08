@@ -1,6 +1,6 @@
-package com.whatthefork.approvalsystem.domain;
+package com.approvalsystem.domain;
 
-import com.whatthefork.approvalsystem.enums.LineStatusEnum;
+import com.approvalsystem.enums.LineStatusEnum;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
