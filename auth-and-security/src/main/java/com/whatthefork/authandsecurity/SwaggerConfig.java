@@ -1,4 +1,4 @@
-package com.whatthefork.resourcereservation;
+package com.whatthefork.authandsecurity;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
