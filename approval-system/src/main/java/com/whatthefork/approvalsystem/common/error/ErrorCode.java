@@ -28,6 +28,9 @@ public enum ErrorCode {
     CANNOT_APPROVE(HttpStatus.BAD_REQUEST, "P004", "결재할 권한이 없습니다."),
     ALREADY_PROCESS(HttpStatus.BAD_REQUEST, "P005", "이미 결재 및 반려한 문서입니다."),
 
+    // Approval
+    CANNOT_CANCLE_SUBMIT(HttpStatus.BAD_REQUEST, "A001", "결재자가 읽은 문서는 상신을 취소할 수 없습니다."),
+
     // Auth
     NOT_DRAFTER(HttpStatus.FORBIDDEN, "A001", "본인의 문서만 수정/삭제할 수 있습니다."),
     NO_READ_AUTHORIZATION(HttpStatus.BAD_REQUEST, "A002", "문서 열람의 권한이 없습니다.");
