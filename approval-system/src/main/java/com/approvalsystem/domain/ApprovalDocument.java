@@ -1,6 +1,6 @@
-package com.whatthefork.approvalsystem.domain;
+package com.approvalsystem.domain;
 
-import com.whatthefork.approvalsystem.enums.DocStatusEnum;
+import com.approvalsystem.enums.DocStatusEnum;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

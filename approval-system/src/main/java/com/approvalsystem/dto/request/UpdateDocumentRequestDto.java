@@ -1,4 +1,4 @@
-package com.whatthefork.approvalsystem.dto.request;
+package com.approvalsystem.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
