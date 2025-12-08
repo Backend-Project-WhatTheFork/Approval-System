@@ -6,8 +6,13 @@ import com.whatthefork.approvalsystem.domain.ApprovalDocument;
 import com.whatthefork.approvalsystem.domain.ApprovalHistory;
 import com.whatthefork.approvalsystem.domain.ApprovalLine;
 import com.whatthefork.approvalsystem.domain.ApprovalReferrer;
+import com.whatthefork.approvalsystem.domain.member.MemberRepository;
 import com.whatthefork.approvalsystem.dto.request.CreateDocumentRequestDto;
 import com.whatthefork.approvalsystem.dto.request.UpdateDocumentRequestDto;
+import com.whatthefork.approvalsystem.dto.response.ApprovalLineResponseDto;
+import com.whatthefork.approvalsystem.dto.response.DocumentDetailResponseDto;
+import com.whatthefork.approvalsystem.dto.response.DocumentListResponseDto;
+import com.whatthefork.approvalsystem.dto.response.ReferrerResponseDto;
 import com.whatthefork.approvalsystem.enums.ActionTypeEnum;
 import com.whatthefork.approvalsystem.enums.DocStatusEnum;
 import com.whatthefork.approvalsystem.enums.LineStatusEnum;
@@ -16,6 +21,8 @@ import com.whatthefork.approvalsystem.repository.ApprovalHistoryRepositoy;
 import com.whatthefork.approvalsystem.repository.ApprovalLineRepository;
 import com.whatthefork.approvalsystem.repository.ApprovalReferrerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +38,10 @@ public class DocumentService {
     private final ApprovalLineRepository approvalLineRepository;
     private final ApprovalHistoryRepositoy approvalHistoryRepositoy;
     private final ApprovalReferrerRepository approvalReferrerRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public Long createDocument(Long userId, CreateDocumentRequestDto requestDto) {
+    public Long createDocument(Long memberId, CreateDocumentRequestDto requestDto) {
 
         // 결재선 저장
         List<Long> approvalIds = requestDto.getApproverIds();
@@ -43,7 +51,7 @@ public class DocumentService {
 
         // 기안 작성
         ApprovalDocument approvalDocument = ApprovalDocument.builder()
-                        .drafter(userId)
+                        .drafter(memberId)
                         .title(requestDto.getTitle())
                         .content(requestDto.getContent())
                         .createdAt(LocalDateTime.now())
@@ -76,7 +84,7 @@ public class DocumentService {
         // 결재 로그 저장
         ApprovalHistory approvalHistory = ApprovalHistory.builder()
                 .document(documentId)
-                .actor(userId)
+                .actor(memberId)
                 .actionType(ActionTypeEnum.CREATE)
                 .build();
 
@@ -86,11 +94,11 @@ public class DocumentService {
     }
 
     @Transactional
-    public void updateDocument(Long userId, Long docId, UpdateDocumentRequestDto requestDto) {
+    public void updateDocument(Long memberId, Long docId, UpdateDocumentRequestDto requestDto) {
         List<Long> approvalIds = requestDto.getApproverIds();
         validateApproverList(approvalIds);
 
-        ApprovalDocument approvalDocument = validateUpdateAuthority(userId, docId);
+        ApprovalDocument approvalDocument = validateUpdateAuthority(memberId, docId);
 
         approvalDocument.updateDocument(
                 requestDto.getTitle(),
@@ -107,6 +115,70 @@ public class DocumentService {
     public void deleteDocument(Long userId, Long docId) {
         ApprovalDocument approvalDocument = validateDeleteAuthority(userId, docId);
         approvalDocument.deleteDocument();
+    }
+
+
+    @Transactional(readOnly = true)
+    public DocumentDetailResponseDto readDetailDocument(Long memberId, Long docId) {
+       ApprovalDocument document = approvalDocumentRepository.findById(docId).orElseThrow(
+                () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
+        );
+
+       if(!document.isSameDrafter(memberId)) {
+           throw new BusinessException(ErrorCode.NOT_DRAFTER);
+       }
+
+       /* 문서 아이디로 결재선과 참조자 목록을 모두 가져옴 */
+       List<ApprovalLine> approvalLines = approvalLineRepository.findByDocumentOrderBySequence(docId);
+       List<ApprovalReferrer> referrers = approvalReferrerRepository.findByDocumentOrderByViewedAt(docId);
+
+        List<ApprovalLineResponseDto> approvalLinesResponseDto = approvalLines.stream()
+                .map(line -> ApprovalLineResponseDto.builder()
+                        .approverId(line.getApprover())
+                        .approverName("임시 이름") // 12.08 memberRepository 연동 후 수정 예정
+                        .sequence(line.getSequence())
+                        .status(line.getLineStatus())
+                        .approvedAt(line.getApprovedAt())
+                        .build()
+                )
+                .toList();
+
+        List<ReferrerResponseDto> referrerResponseDto = referrers.stream().map(
+                referrer -> ReferrerResponseDto.builder()
+                        .referrerId(referrer.getReferrer())
+                        .referrerName("임시 이름") // 12.08 memberRepository 연동 후 수정
+                        .viewedAt(referrer.getViewedAt())
+                        .build()
+        ).toList();
+
+       DocumentDetailResponseDto responseDto = DocumentDetailResponseDto.builder()
+               .documentId(docId)
+               .title(document.getTitle())
+               .content(document.getContent())
+               .docStatus(document.getDocStatus())
+               .drafterId(document.getDrafter())
+               .startVacationDate(document.getStartVacationDate())
+               .endVacationDate(document.getEndVacationDate())
+               .createdAt(document.getCreatedAt())
+               .approvers(approvalLinesResponseDto)
+               .referrers(referrerResponseDto)
+               .build();
+
+       return responseDto;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DocumentListResponseDto> getTempDocumentList(Long memberId, Pageable pageable) {
+        Page<ApprovalDocument> documentList = approvalDocumentRepository.findByDocStatusAndDrafterOrderByCreatedAtDesc(DocStatusEnum.TEMP, memberId, pageable);
+
+        return documentList.map(document ->
+                DocumentListResponseDto.builder()
+                        .documentId(document.getId())
+                        .title(document.getTitle())
+                        .status(document.getDocStatus())
+                        .createdDate(document.getCreatedAt())
+                        .build()
+        );
     }
 
     private ApprovalDocument validateUpdateAuthority(Long userId, Long docId) {
