@@ -70,8 +70,10 @@ public class ConferenceRoomService {
         );
     }
 
-    public ConferenceRoomResponse getConferenceRoomByMaxCapacity(int maxCapacity) {
+    public List<ConferenceRoomResponse> getConferenceRoomByMaxCapacity(int maxCapacity) {
 
-        return new ConferenceRoomResponse(conferenceRoomRepository.findByMaxCapacity(maxCapacity));
+        return conferenceRoomRepository.findAllByMaxCapacity(maxCapacity).stream()
+                .map(ConferenceRoomResponse::new)
+                .collect(Collectors.toList());
     }
 }

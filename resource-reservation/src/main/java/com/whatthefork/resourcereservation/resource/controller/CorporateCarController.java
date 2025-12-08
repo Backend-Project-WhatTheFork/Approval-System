@@ -21,7 +21,8 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/corporate-cars")
+//@RequestMapping("/api/v1/corporate-cars")
+@RequestMapping("/corporate-cars")
 @RequiredArgsConstructor
 public class CorporateCarController {
 

@@ -27,12 +27,16 @@ public class Supplies {
     private int capacity;
 
     @Column(nullable = false)
+    private int maxCapacity;
+
+    @Column(nullable = false)
     private boolean isBooked = false;
 
     @Builder
-    public Supplies(String name, int capacity) {
+    public Supplies(String name, int capacity, int maxCapacity) {
         this.name = name;
         this.capacity = capacity;
+        this.maxCapacity = maxCapacity;
     }
 
     public Supplies updateName(String name) {

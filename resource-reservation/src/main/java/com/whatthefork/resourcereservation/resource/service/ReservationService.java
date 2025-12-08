@@ -51,7 +51,6 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-    // 아래 3개 그지같은 코드 리팩토링 예정
     @Transactional
     public ReservationAndConferenceRoom createRoomReservation(CreateReservationRequest reservationRequest, Long userId) {
 
@@ -65,7 +64,6 @@ public class ReservationService {
         }
 
         conferenceRoom.updateIsBooked(true);
-        conferenceRoomRepository.save(conferenceRoom);
 
         ConferenceRoomResponse conferenceRoomResponse = new ConferenceRoomResponse(conferenceRoomRepository
                 .findById(reservationRequest.resourceId())
@@ -90,7 +88,6 @@ public class ReservationService {
         }
 
         corporateCar.updateIsBooked(true);
-        corporateCarRepository.save(corporateCar);
 
         CorporateCarResponse corporateCarResponse = new CorporateCarResponse(corporateCarRepository
                 .findById(reservationRequest.resourceId())
@@ -115,7 +112,6 @@ public class ReservationService {
         }
 
         supply.updateIsBooked(true);
-        supplyRepository.save(supply);
 
         SuppliesResponse suppliesResponse = new SuppliesResponse(supplyRepository
                 .findById(reservationRequest.resourceId())

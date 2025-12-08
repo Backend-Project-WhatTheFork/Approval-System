@@ -1,5 +1,6 @@
 package com.whatthefork.resourcereservation.resource.repository;
 
+import com.whatthefork.resourcereservation.resource.dto.response.ConferenceRoomResponse;
 import com.whatthefork.resourcereservation.resource.entity.ConferenceRoom;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.Lock;
@@ -23,4 +24,6 @@ public interface ConferenceRoomRepository {
     ConferenceRoom findByMaxCapacity(int maxCapacity);
 
     List<ConferenceRoom> findAll();
+
+    List<ConferenceRoom> findAllByMaxCapacity(int maxCapacity);
 }
