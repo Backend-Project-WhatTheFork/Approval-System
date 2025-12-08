@@ -14,5 +14,5 @@ public interface ApprovalDocumentRepository extends JpaRepository<ApprovalDocume
 
     Page<ApprovalDocument> findByDocStatusAndDrafterOrderByCreatedAtDesc(DocStatusEnum docStatus, Long drafter, Pageable pageable);
 
-    Page<ApprovalDocument> findByDocStatusAndDocStatusIn(List<DocStatusEnum> statusEnumList, Long drafter, Pageable pageable);
+    Page<ApprovalDocument> findByDocStatusAndDocStatusIn(Long drafter, List<DocStatusEnum> statusEnumList, Pageable pageable);
 }
