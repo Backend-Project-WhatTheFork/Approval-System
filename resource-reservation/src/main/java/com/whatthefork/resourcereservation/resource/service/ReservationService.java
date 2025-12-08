@@ -46,7 +46,7 @@ public class ReservationService {
 
     public List<ReservationResponse> getAllReservations() {
 
-        return reservationRepository.findAllOrderByStartDate().stream()
+        return reservationRepository.findAll().stream()
                 .map(reservation -> { return new ReservationResponse(reservation); })
                 .collect(Collectors.toList());
     }
@@ -179,7 +179,7 @@ public class ReservationService {
     public List<ReservationResponse> getExpiredReservations(Long userId) {
         log.info("get in");
 
-        List<Reservation> allReservations = reservationRepository.findAllByUserIdOrderByStartDate(userId);
+        List<Reservation> allReservations = reservationRepository.findAllByUserId(userId);
 
         List<Reservation> expiredReservations = allReservations.stream()
                 .filter(reservation -> {
@@ -198,7 +198,7 @@ public class ReservationService {
 
     public List<CanceledReservationResponse> getCanceledReservations(Long userId) {
 
-        return cancelRepository.findAllByUserIdOrderByStartDate(userId).stream()
+        return cancelRepository.findAllByUserId(userId).stream()
                 .map(CanceledReservationResponse::new)
                 .toList();
     }
