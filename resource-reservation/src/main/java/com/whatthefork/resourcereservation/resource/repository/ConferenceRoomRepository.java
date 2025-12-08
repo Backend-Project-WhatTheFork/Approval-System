@@ -1,6 +1,8 @@
 package com.whatthefork.resourcereservation.resource.repository;
 
 import com.whatthefork.resourcereservation.resource.entity.ConferenceRoom;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,6 +15,7 @@ public interface ConferenceRoomRepository {
 
     void deleteById(Long id);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<ConferenceRoom> findById(Long id);
 
     Optional<ConferenceRoom> findByName(String name);

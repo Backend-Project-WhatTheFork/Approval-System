@@ -27,8 +27,10 @@ public class ConferenceRoomController {
 
     private final ConferenceRoomService conferenceRoomService;
 
+
+    // 전체 회의실 조회
     @GetMapping
-    public ResponseEntity<ApiResponse> conferenceRoom() {
+    public ResponseEntity<ApiResponse> getAllconferenceRooms() {
 
         List<ConferenceRoomResponse> conferenceRoomList = conferenceRoomService.getAllConferenceRooms();
 
@@ -37,6 +39,7 @@ public class ConferenceRoomController {
         return ResponseEntity.ok(ApiResponse.success(conferenceRoomList));
     }
 
+    // 회의실 추가
     @PostMapping
     public ResponseEntity<ApiResponse> createConferenceRoom(@RequestBody CreateConferenceRoomRequest conferenceRoom) {
         log.info("create conference room: {}", conferenceRoom);
@@ -44,6 +47,7 @@ public class ConferenceRoomController {
         return ResponseEntity.ok(ApiResponse.success(conferenceRoomService.createConferenceRoom(conferenceRoom)));
     }
 
+    // 회의실 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteConferenceRoom(@PathVariable Long id) {
         log.info("delete conference room: {}", id);
@@ -53,6 +57,7 @@ public class ConferenceRoomController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+    // 회의실 수정
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse> updateConferenceRoom(@PathVariable Long id, @RequestBody UpdateConferenceRoomRequest roomRequest) {
         log.info("update conference room: {}", id);
@@ -60,6 +65,7 @@ public class ConferenceRoomController {
         return ResponseEntity.ok(ApiResponse.success(conferenceRoomService.updateConferenceRoomById(id, roomRequest)));
     }
 
+    // 이름으로 회의실 검색
     @GetMapping("/name/{name}")
     public ResponseEntity<ApiResponse> getConferenceRoomById(@PathVariable String name) {
         log.info("get conference room by name: {}", name);
@@ -67,6 +73,7 @@ public class ConferenceRoomController {
         return ResponseEntity.ok(ApiResponse.success(conferenceRoomService.getConferenceRoomByName(name)));
     }
 
+    // 최대 인원으로 회의실 검색
     @GetMapping("/maxCapacity/{maxCapacity}")
     public ResponseEntity<ApiResponse> getConferenceRoomByMaxCapacity(@PathVariable int maxCapacity) {
         log.info("get conference room by maxCapacity: {}", maxCapacity);

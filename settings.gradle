@@ -1,2 +1,3 @@
 rootProject.name = 'root'
 include 'eureka-server'
+include 'resource-reservation'

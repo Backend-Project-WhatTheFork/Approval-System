@@ -2,6 +2,8 @@ package com.whatthefork.resourcereservation.resource.repository;
 
 import com.whatthefork.resourcereservation.resource.entity.ConferenceRoom;
 import com.whatthefork.resourcereservation.resource.entity.Supplies;
+import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +16,7 @@ public interface SupplyRepository {
 
     void deleteById(Long id);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Supplies> findById(Long id);
 
     Optional<Supplies> findByName(String name);
