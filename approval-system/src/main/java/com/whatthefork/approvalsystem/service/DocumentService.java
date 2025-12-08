@@ -46,7 +46,7 @@ public class DocumentService {
 
         // 결재선 저장
         List<Long> approvalIds = requestDto.getApproverIds();
-        validateApproverList(approvalIds);
+        validateApproverList(approvalIds, memberId);
 
         /* (추후 구현) memberRepository에서 해당 멤버가 존재하는지 getDraftId로 판독 */
 
@@ -64,16 +64,16 @@ public class DocumentService {
                         .build();
 
         ApprovalDocument savedDoc = approvalDocumentRepository.save(approvalDocument);
-        Long documentId = savedDoc.getId();
+        Long docId = savedDoc.getId();
 
         // 결재선 등록
-        createApprovalLines(documentId, approvalIds);
+        createApprovalLines(docId, approvalIds);
 
         // 참조자 설정
         if(requestDto.getReferrer() != null) {
             for(Long referrerId : requestDto.getReferrer()) {
                 ApprovalReferrer approvalReferrer = ApprovalReferrer.builder()
-                        .document(documentId)
+                        .document(docId)
                         .referrer(referrerId)
                         .viewedAt(null)
                         .build();
@@ -84,7 +84,7 @@ public class DocumentService {
 
         // 결재 로그 저장
         ApprovalHistory approvalHistory = ApprovalHistory.builder()
-                .document(documentId)
+                .document(docId)
                 .actor(memberId)
                 .actionType(ActionTypeEnum.CREATE)
                 .build();
@@ -97,7 +97,7 @@ public class DocumentService {
     @Transactional
     public void updateDocument(Long memberId, Long docId, UpdateDocumentRequestDto requestDto) {
         List<Long> approvalIds = requestDto.getApproverIds();
-        validateApproverList(approvalIds);
+        validateApproverList(approvalIds, memberId);
 
         ApprovalDocument approvalDocument = validateUpdateAuthority(memberId, docId);
 
@@ -234,7 +234,7 @@ public class DocumentService {
         return approvalDocument;
     }
 
-    private void validateApproverList(List<Long> approvalIds) {
+    private void validateApproverList(List<Long> approvalIds, Long memberId) {
         if (approvalIds == null || approvalIds.isEmpty()) {
             throw new BusinessException(ErrorCode.APPROVER_REQUIRED);
         }
@@ -242,9 +242,24 @@ public class DocumentService {
         if (approvalIds.size() != 3) {
             throw new BusinessException(ErrorCode.INVALID_APPROVER_COUNT);
         }
+
+        // 기안자 = 결재자 방지
+        if (approvalIds.stream().anyMatch(approverId -> approverId.equals(memberId))) {
+            throw new BusinessException(ErrorCode.DRAFTER_EQUALS_APPROVER);
+        }
+
+        long existingApproverCount = memberRepository.countAllByIdIn(approvalIds);
+
+        if (existingApproverCount != approvalIds.size()) {
+            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+        }
     }
 
     private void createApprovalLines(Long docId, List<Long> approvalIds) {
+
+        if (!approvalDocumentRepository.existsById(docId)) {
+            throw new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND);
+        }
 
         for(int i = 0; i < approvalIds.size(); i++) {
             ApprovalLine newLine = ApprovalLine.builder()
