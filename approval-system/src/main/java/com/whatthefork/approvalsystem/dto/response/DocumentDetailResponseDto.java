@@ -3,14 +3,12 @@ package com.whatthefork.approvalsystem.dto.response;
 import com.whatthefork.approvalsystem.enums.DocStatusEnum;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
 @Builder
 public class DocumentDetailResponseDto {
 
