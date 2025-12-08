@@ -46,11 +46,12 @@ public class ReservationService {
 
     public List<ReservationResponse> getAllReservations() {
 
-        return reservationRepository.findAllOrderByStartDate().stream()
+        return reservationRepository.findAll().stream()
                 .map(reservation -> { return new ReservationResponse(reservation); })
                 .collect(Collectors.toList());
     }
 
+    // 아래 3개 그지같은 코드 리팩토링 예정
     @Transactional
     public ReservationAndConferenceRoom createRoomReservation(CreateReservationRequest reservationRequest, Long userId) {
 
@@ -64,6 +65,7 @@ public class ReservationService {
         }
 
         conferenceRoom.updateIsBooked(true);
+        conferenceRoomRepository.save(conferenceRoom);
 
         ConferenceRoomResponse conferenceRoomResponse = new ConferenceRoomResponse(conferenceRoomRepository
                 .findById(reservationRequest.resourceId())
@@ -88,6 +90,7 @@ public class ReservationService {
         }
 
         corporateCar.updateIsBooked(true);
+        corporateCarRepository.save(corporateCar);
 
         CorporateCarResponse corporateCarResponse = new CorporateCarResponse(corporateCarRepository
                 .findById(reservationRequest.resourceId())
@@ -112,6 +115,7 @@ public class ReservationService {
         }
 
         supply.updateIsBooked(true);
+        supplyRepository.save(supply);
 
         SuppliesResponse suppliesResponse = new SuppliesResponse(supplyRepository
                 .findById(reservationRequest.resourceId())
@@ -179,7 +183,7 @@ public class ReservationService {
     public List<ReservationResponse> getExpiredReservations(Long userId) {
         log.info("get in");
 
-        List<Reservation> allReservations = reservationRepository.findAllByUserIdOrderByStartDate(userId);
+        List<Reservation> allReservations = reservationRepository.findAllByUserId(userId);
 
         List<Reservation> expiredReservations = allReservations.stream()
                 .filter(reservation -> {
@@ -198,7 +202,7 @@ public class ReservationService {
 
     public List<CanceledReservationResponse> getCanceledReservations(Long userId) {
 
-        return cancelRepository.findAllByUserIdOrderByStartDate(userId).stream()
+        return cancelRepository.findAllByUserId(userId).stream()
                 .map(CanceledReservationResponse::new)
                 .toList();
     }

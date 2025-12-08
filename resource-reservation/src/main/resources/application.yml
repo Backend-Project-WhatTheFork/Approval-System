@@ -8,16 +8,16 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:8766/eureka
 
 spring:
   application:
     name: resource-reservation
   datasource:
-    url: jdbc:mysql://dev.macacolabs.site:3307/approvaldb
+    url: jdbc:mysql://dev.macacolabs.site:3307/approval_db
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: approval
-    password: approval
+    username: root
+    password: mysql@
   jpa:
     properties:
       hibernate:
@@ -31,3 +31,5 @@ spring:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: trace
+
+
