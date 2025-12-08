@@ -1,4 +1,4 @@
-package com.approvalsystem;
+package com.whatthefork.approvalsystem;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.servers.Server;
