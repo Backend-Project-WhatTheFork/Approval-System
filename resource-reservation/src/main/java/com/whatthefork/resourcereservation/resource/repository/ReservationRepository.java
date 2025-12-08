@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ReservationRepository {
 
-    List<Reservation> findAll();
+    List<Reservation> findAllOrderByStartDate();
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Reservation save(Reservation reservation);
@@ -24,7 +24,7 @@ public interface ReservationRepository {
     Optional<Reservation> findById(Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<Reservation> findAllByUserId(Long userId);
+    List<Reservation> findAllByUserIdOrderByStartDate(Long userId);
 
     Optional<Reservation> findByUserId(Long userId);
 }

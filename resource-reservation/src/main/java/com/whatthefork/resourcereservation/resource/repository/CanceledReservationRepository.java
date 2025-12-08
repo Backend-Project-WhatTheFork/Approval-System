@@ -9,5 +9,5 @@ import java.util.List;
 public interface CanceledReservationRepository {
     CanceledReservation save(CanceledReservation reservation);
 
-    List<CanceledReservation> findAllByUserId(Long userId);
+    List<CanceledReservation> findAllByUserIdOrderByStartDate(Long userId);
 }
