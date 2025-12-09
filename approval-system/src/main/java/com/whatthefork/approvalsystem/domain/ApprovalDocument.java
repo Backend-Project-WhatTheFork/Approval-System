@@ -110,4 +110,8 @@ public class ApprovalDocument {
     public void completeApproval() {
         this.docStatus = DocStatusEnum.APPROVED;
     }
+
+    public void rejectApproval() {
+        this.docStatus = DocStatusEnum.REJECTED;
+    }
 }

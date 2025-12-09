@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ApprovalService {
@@ -23,22 +25,6 @@ public class ApprovalService {
     private final ApprovalHistoryRepositoy approvalHistoryRepositoy;
     private final ApprovalLineRepository approvalLineRepository;
     private final ApprovalReferrerRepository approvalReferrerRepository;
-
-    // Submit (상신 -> 기안자)
-    /* ========================================== 상신 =======================================================
-    * 1. 기안자가 임시 저장 상태의 기안을 상신 버튼을 누름
-    * 2. 첫번째 결재자 순서로 이동.
-    *    DocStatus = CREATE -> SUBMIT,
-    *    DocStatusEnum TEMP -> IN PROGRESS
-    *   (첫 번째 결재자가 아직 안 읽었을 경우 상신 취소 가능. 그러면 SUBMIT -> CREATE)
-    * ============================================ 읽음 =====================================================
-    * 3. 첫번째 결재자가 readDetailDocument 하면 ActionType이 SUBMIT -> READ로 변경.
-    * ============================================ 승인, 반려 =====================================================
-    * 3.1 첫번째 결재자가 승인하면 ActionType READ -> APPROVE 후 해당 결재자의 LineStatus를 APPROVED로 변경 그 다음 결재자 순서로 넘김.
-    * 3.2 첫번째 결재자가 반려하면 ActionType READ -> REJECT 후 DocStatus IN_PROGRESS -> REJECTED
-    * 4. 세번째 결재자까지 반복. 세번째 결재자까지 승인하면 DocStatus IN_PROGRESS -> APPROVED
-    * 5. 휴가 날짜 계산 로직 발동 (추후 구현)
-    * */
 
 /* 상신 (기안자)
  권한: 기안자만 가능하며, DocStatus가 TEMP일 때만 허용
@@ -97,19 +83,6 @@ public class ApprovalService {
 
         }
 
-        /*
-        *  * * 4. [APPROVE] 승인 (결재자)
-         * - ApprovalLine (현재 결재자): LineStatus 변경 (WAIT -> APPROVED), approvedAt 기록.
-         * - ApprovalHistory: APPROVE 로그 기록.
-         * - 다음 순서 처리:
-         * a) 마지막 결재자가 아닌 경우:
-         * - ApprovalDocument: CurrentSequence를 1 증가시킴.
-         * - ApprovalLine (다음 결재자): LineStatus를 WAIT으로 설정.
-         * b) 최종 결재자인 경우:
-         * - ApprovalDocument: DocStatus 변경 (IN_PROGRESS -> APPROVED).
-         * - (후속 처리: 휴가 날짜 계산 등 추가 비즈니스 로직 발동)
-         * sequence = [2, 3, 4]
-        * */
     public void approveDocument(Long docId, Long memberId) {
         /*
         * 1. document에서 현재 시퀀스를 가져와 line의 sequence로 currentsequence에 해당하는 멤버를 불러온다. (lineRepository 활용)
@@ -155,6 +128,39 @@ public class ApprovalService {
         } else {
             document.completeApproval();
         }
+    }
+
+    public void rejectDocument(Long docId, Long memberId) {
+        /*
+        * 1. Document 에서 현재 시퀀스를 가져와 line의 sequence로 currentsequence에 해당하는 멤버를 불러온다. (lineRepository 활용) -> 승인과 동일
+        * 2. Line에서 Status WAIT에서 REJECTED로 변경 후 approvedAt 기록 (Builder 객체 생성 시 자동 부여)
+        * 3. Document docStatus를 변경 (REJECTED) 후 결재 종료
+        * 4. History REJECT 로그 기록
+        * */
+        ApprovalDocument document = approvalDocumentRepository.findById(docId).orElseThrow(
+                () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
+        );
+
+        int currentSequence = document.getCurrentSequence();
+
+        ApprovalLine currentLine = approvalLineRepository.findByDocumentAndSequenceAndApprover(docId, currentSequence, memberId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_MATCH_APPROVER)
+        );
+
+        if(currentLine.getLineStatus() != LineStatusEnum.WAIT) {
+            throw new BusinessException(ErrorCode.ALREADY_PROCESS);
+        }
+
+        currentLine.reject();
+
+        document.rejectApproval();
+
+        ApprovalHistory approvalHistory = ApprovalHistory.builder()
+                .document(docId)
+                .actor(memberId)
+                .actionType(ActionTypeEnum.REJECT)
+                .build();
+        approvalHistoryRepositoy.save(approvalHistory);
     }
 
     public ApprovalDocument validateSubmitAuthority(Long docId, Long memberId) {
