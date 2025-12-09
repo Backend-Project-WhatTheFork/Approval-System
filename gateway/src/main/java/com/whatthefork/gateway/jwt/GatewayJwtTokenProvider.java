@@ -29,7 +29,8 @@ public class GatewayJwtTokenProvider {
             Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
             return true;
         } catch (Exception e) {
-            throw new RuntimeException("Invalid JWT Token", e);
+            return false;
+            //throw new RuntimeException("Invalid JWT Token", e);
         }
     }
 
