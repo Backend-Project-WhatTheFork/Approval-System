@@ -10,12 +10,9 @@ import com.whatthefork.approvalsystem.enums.LineStatusEnum;
 import com.whatthefork.approvalsystem.repository.ApprovalDocumentRepository;
 import com.whatthefork.approvalsystem.repository.ApprovalHistoryRepositoy;
 import com.whatthefork.approvalsystem.repository.ApprovalLineRepository;
-import com.whatthefork.approvalsystem.repository.ApprovalReferrerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +21,6 @@ public class ApprovalService {
     private final ApprovalDocumentRepository approvalDocumentRepository;
     private final ApprovalHistoryRepositoy approvalHistoryRepositoy;
     private final ApprovalLineRepository approvalLineRepository;
-    private final ApprovalReferrerRepository approvalReferrerRepository;
 
 /* 상신 (기안자)
  권한: 기안자만 가능하며, DocStatus가 TEMP일 때만 허용
@@ -49,7 +45,7 @@ public class ApprovalService {
     }
 
     @Transactional
-    public void cancleSubmit(Long docId, Long memberId) {
+    public void cancelSubmit(Long docId, Long memberId) {
         ApprovalDocument document = validateSubmitAuthority(docId, memberId);
 
         ApprovalLine firstLine = approvalLineRepository.findByDocumentAndSequence(docId, 1)
@@ -60,14 +56,14 @@ public class ApprovalService {
 
         // 첫번째 라인의 상태가 WAIT일 경우(APPROVED나 REJECT면 X)
         if(!firstLine.getLineStatus().equals(LineStatusEnum.WAIT)) {
-            throw new  BusinessException(ErrorCode.CANNOT_CANCLE_SUBMIT);
+            throw new  BusinessException(ErrorCode.CANNOT_CANCEL_SUBMIT);
         }
 
         // 첫번째 결재자가 해당 문서의 로그에 READ를 남긴 적이 있다면
         boolean isRead = approvalHistoryRepositoy.existsByDocumentAndActorAndActionType(docId, firstLineApproverId, ActionTypeEnum.READ);
 
         if(isRead) {
-            throw new BusinessException(ErrorCode.CANNOT_CANCLE_SUBMIT);
+            throw new BusinessException(ErrorCode.CANNOT_CANCEL_SUBMIT);
         }
 
         // 상신 취소. IN_PROGRESS -> TEMP
@@ -83,6 +79,7 @@ public class ApprovalService {
 
         }
 
+    @Transactional
     public void approveDocument(Long docId, Long memberId) {
         /*
         * 1. document에서 현재 시퀀스를 가져와 line의 sequence로 currentsequence에 해당하는 멤버를 불러온다. (lineRepository 활용)
@@ -96,18 +93,10 @@ public class ApprovalService {
         ApprovalDocument document = approvalDocumentRepository.findById(docId).orElseThrow(
                 () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
         );
+
         int currentSequence = document.getCurrentSequence();
 
-        // 현재 문서의 결재선의 sequence가 현재 문서의 CurrentSequence인 approver를 찾아내야 함
-        // 전달 받은 결재자와 결재선의 sequence에 있는 결재자가 다를 경우
-        ApprovalLine currentLine = approvalLineRepository.findByDocumentAndSequenceAndApprover(docId, currentSequence, memberId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_MATCH_APPROVER)
-        );
-
-        // WAIT 상태가 아닌 경우 이미 처리를 한 것임
-        if(currentLine.getLineStatus() != LineStatusEnum.WAIT) {
-            throw new BusinessException(ErrorCode.ALREADY_PROCESS);
-        }
+        ApprovalLine currentLine = validateApprovalLine(docId, document.getCurrentSequence(),  memberId);
 
         // LineStatus를 approve로 변경
         currentLine.approve();
@@ -130,6 +119,7 @@ public class ApprovalService {
         }
     }
 
+    @Transactional
     public void rejectDocument(Long docId, Long memberId) {
         /*
         * 1. Document 에서 현재 시퀀스를 가져와 line의 sequence로 currentsequence에 해당하는 멤버를 불러온다. (lineRepository 활용) -> 승인과 동일
@@ -141,15 +131,7 @@ public class ApprovalService {
                 () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
         );
 
-        int currentSequence = document.getCurrentSequence();
-
-        ApprovalLine currentLine = approvalLineRepository.findByDocumentAndSequenceAndApprover(docId, currentSequence, memberId).orElseThrow(
-                () -> new BusinessException(ErrorCode.NOT_MATCH_APPROVER)
-        );
-
-        if(currentLine.getLineStatus() != LineStatusEnum.WAIT) {
-            throw new BusinessException(ErrorCode.ALREADY_PROCESS);
-        }
+        ApprovalLine currentLine = validateApprovalLine(docId, document.getCurrentSequence(),  memberId);
 
         currentLine.reject();
 
@@ -173,5 +155,20 @@ public class ApprovalService {
         }
 
         return document;
+    }
+
+    public ApprovalLine validateApprovalLine(Long docId, int currentSequence, Long memberId) {
+        // 현재 문서의 결재선의 sequence가 현재 문서의 CurrentSequence인 approver를 찾아내야 함
+        // 전달 받은 결재자와 결재선의 sequence에 있는 결재자가 다를 경우
+        ApprovalLine currentLine = approvalLineRepository.findByDocumentAndSequenceAndApprover(docId, currentSequence, memberId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_MATCH_APPROVER)
+        );
+
+        // WAIT 상태가 아닌 경우 이미 처리를 한 것임
+        if(currentLine.getLineStatus() != LineStatusEnum.WAIT) {
+            throw new BusinessException(ErrorCode.ALREADY_PROCESS);
+        }
+
+        return currentLine;
     }
 }
