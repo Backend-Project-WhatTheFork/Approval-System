@@ -14,10 +14,10 @@ spring:
   application:
     name: resource-reservation
   datasource:
-    url: jdbc:mariadb://dev.macacolabs.site:3307/approval_db
+    url: jdbc:mariadb://dev.macacolabs.site:3306/approvaldb
     driver-class-name: org.mariadb.jdbc.Driver
-    username: root
-    password: mysql@
+    username: fork
+    password: fork
   jpa:
     properties:
       hibernate:

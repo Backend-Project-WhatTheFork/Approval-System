@@ -45,21 +45,23 @@ public class ReservationController {
 
     // 예약 취소
     @PostMapping("/cancellations/{reservationId}")
-//    @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isReservationOwner(principal.username, #userId)")
+    @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isReservationOwner(principal.username, #reservationId)")
     public ResponseEntity<ApiResponse> cancelReservation(@PathVariable Long reservationId) {
 
         return ResponseEntity.ok(ApiResponse.success(reservationService.cancelReservation(reservationId, userId)));
     }
 
     // 예약 수정
-    @PatchMapping("/edit/{id}")
-    public ResponseEntity<ApiResponse> editReservation(@PathVariable Long id, @RequestBody UpdateReservationRequest reservationRequest) {
+    @PatchMapping("/edit/{reservationId}")
+    @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isReservationOwner(principal.username, #reservationId)")
+    public ResponseEntity<ApiResponse> editReservation(@PathVariable Long reservationId, @RequestBody UpdateReservationRequest reservationRequest) {
 
-        return ResponseEntity.ok(ApiResponse.success(reservationService.editReservation(reservationRequest, id)));
+        return ResponseEntity.ok(ApiResponse.success(reservationService.editReservation(reservationRequest, reservationId)));
     }
 
     // 내 만료 예약 목록 확인
     @GetMapping("/expired")
+    @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isReservationOwner(principal.username, #reservationId)")
     public ResponseEntity<ApiResponse> expiredReservations() {
 
         return ResponseEntity.ok(ApiResponse.success(reservationService.getExpiredReservations(userId)));
@@ -67,6 +69,7 @@ public class ReservationController {
 
     // 내 취소 예약 목록 확인
     @GetMapping("/canceled")
+    @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isReservationOwner(principal.username, #reservationId)")
     public ResponseEntity<ApiResponse> canceledReservations() {
 
         return ResponseEntity.ok(ApiResponse.success(reservationService.getCanceledReservations(userId)));

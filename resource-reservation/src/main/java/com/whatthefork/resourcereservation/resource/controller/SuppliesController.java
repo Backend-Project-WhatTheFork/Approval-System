@@ -8,6 +8,7 @@ import com.whatthefork.resourcereservation.resource.service.SupplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,6 +42,7 @@ public class SuppliesController {
 
     // 비품 추가
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> createSupply(@RequestBody CreateSuppliesRequest suppliesRequest) {
         log.info("create supplies Request: {}", suppliesRequest);
 
@@ -49,6 +51,7 @@ public class SuppliesController {
 
     // 비품 삭제
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteSupply(@PathVariable Long id) {
         log.info("delete supply: {}", id);
 
@@ -59,6 +62,7 @@ public class SuppliesController {
 
     // 비품 수정
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateSupply(@PathVariable Long id, @RequestBody UpdateSuppliesRequest suppliesRequest) {
         log.info("update supply: {}", id);
 
