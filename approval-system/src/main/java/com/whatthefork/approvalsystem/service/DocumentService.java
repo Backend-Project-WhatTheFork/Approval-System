@@ -224,7 +224,8 @@ public class DocumentService {
 //  ApprovalHistory: READ 로그 기록. (문서 열람 시간 추적)
 //  ApprovalReferrer: 참조자가 열람 시 viewedAt 필드를 현재 시간으로 업데이트.
 //  ApprovalLine: 결재자가 열람해도 LineStatus는 WAIT 상태 유지.
-    public void writeHistory(Long docId, Long memberId) {
+    @Transactional
+    public void writeReadHistory(Long docId, Long memberId) {
 
         // 문서가 존재하는지
         ApprovalDocument approvalDocument = approvalDocumentRepository.findById(docId).orElseThrow(

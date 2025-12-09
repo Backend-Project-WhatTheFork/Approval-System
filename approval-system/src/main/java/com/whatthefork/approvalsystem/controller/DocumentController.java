@@ -46,7 +46,7 @@ public class DocumentController {
     @GetMapping("/{docId}")
     public ResponseEntity<ApiResponse> getDocumentDetail(/*Long memberId,*/ @PathVariable Long docId) {
         Long memberId = 101L;
-        documentService.writeHistory(memberId, docId);
+        documentService.writeReadHistory(memberId, docId);
         DocumentDetailResponseDto response = documentService.readDetailDocument(memberId, docId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }

@@ -21,9 +21,16 @@ public class ApprovalController {
     }
 
     @PutMapping("/{docId}/submit/cancel")
-    public ResponseEntity<ApiResponse> cancelApproval(@PathVariable Long docId) {
+    public ResponseEntity<ApiResponse> cancelApproval(/*Long memberId,*/ @PathVariable Long docId) {
         Long memberId = 101L;
         approvalService.cancleSubmit(docId, memberId);
         return ResponseEntity.ok(ApiResponse.success("상신 취소 완료"));
+    }
+
+    @PutMapping("/{docId}/approve")
+    public ResponseEntity<ApiResponse> approveDocument(/*Long memberId,*/ @PathVariable Long docId) {
+        Long memberId = 101L;
+        approvalService.approveDocument(docId, memberId);
+        return ResponseEntity.ok(ApiResponse.success("결재 승인"));
     }
 }
