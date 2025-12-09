@@ -1,5 +1,7 @@
 package com.whatthefork.resourcereservation.security;
 
+import com.whatthefork.resourcereservation.exception.BusinessException;
+import com.whatthefork.resourcereservation.exception.ErrorCode;
 import com.whatthefork.resourcereservation.resource.entity.Reservation;
 import com.whatthefork.resourcereservation.resource.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,6 @@ public class ReservationSecurity {
         return reservationRepository.findById(reservationId)
                 .map(Reservation::getUserId) // 예약 엔티티에서 소유자 ID를 가져옴
                 .map(ownerId -> ownerId.equals(currentUserId)) // 현재 사용자 ID와 비교
-                .orElse(false); // 예약이 존재하지 않으면 접근 불가
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_ENOUGH_AUTHORITY)); // 예약이 존재하지 않으면 접근 불가
     }
 }

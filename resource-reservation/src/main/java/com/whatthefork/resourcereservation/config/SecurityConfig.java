@@ -23,10 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // CSRF 보호 비활성화 (API 서버이므로)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 미사용
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated() // 모든 요청은 인증되어야 함 (게이트웨이에서 이미 인증)
-                );
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // 세션 미사용
 
         // 3. 커스텀 필터를 UsernamePasswordAuthenticationFilter 이전에 추가
         http.addFilterBefore(new GatewayAuthFilter(), UsernamePasswordAuthenticationFilter.class);
