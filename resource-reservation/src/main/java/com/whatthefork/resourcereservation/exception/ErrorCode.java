@@ -16,7 +16,10 @@ public enum ErrorCode {
     SIMULTANEOUS_CONNECTION("10003", "이미 누군가 예약중", HttpStatus.BAD_REQUEST),
 
     // 비품 개수 모자람
-    NOT_ENOUGH_CAPACITY("10003", "비품의 재고 없음", HttpStatus.BAD_REQUEST);
+    NOT_ENOUGH_CAPACITY("10003", "비품의 재고 없음", HttpStatus.BAD_REQUEST),
+
+    // 권한 없음
+    NOT_ENOUGH_AUTHORITY("10004", "권한 부족", HttpStatus.BAD_REQUEST);
 
     ErrorCode(String code, String message, HttpStatus httpStatus) {
         this.code = code;
