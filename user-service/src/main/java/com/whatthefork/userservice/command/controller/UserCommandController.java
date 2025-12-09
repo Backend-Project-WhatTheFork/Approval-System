@@ -3,6 +3,7 @@ package com.whatthefork.userservice.command.controller;
 import com.whatthefork.userservice.command.dto.UserCreateRequest;
 import com.whatthefork.userservice.command.service.UserCommandService;
 import com.whatthefork.userservice.common.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class UserCommandController {
     private final UserCommandService userCommandService;
 
     @PostMapping("/users")
-    public ResponseEntity<ApiResponse<Void>> register(@RequestBody UserCreateRequest request) {
+    public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody UserCreateRequest request) {
         userCommandService.registerUser(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
