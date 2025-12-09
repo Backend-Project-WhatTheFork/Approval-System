@@ -13,6 +13,7 @@ import com.whatthefork.approvalsystem.repository.ApprovalLineRepository;
 import com.whatthefork.approvalsystem.repository.ApprovalReferrerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,7 @@ public class ApprovalService {
  ApprovalDocument: DocStatus 변경 (TEMP -> IN_PROGRESS), CurrentSequence = 1로 설정.
  ApprovalHistory: SUBMIT 로그 기록 (기존 CREATE 로그는 유지)
  상신 취소 : 첫 번째 결재자가 처리 전이라면 IN_PROGRESS -> TEMP로 복귀 가능.*/
+    @Transactional
     public void submitApproval(Long docId, Long memberId) {
         ApprovalDocument document = validateSubmitAuthority(docId, memberId);
 
@@ -60,6 +62,7 @@ public class ApprovalService {
         approvalHistoryRepositoy.save(approvalHistory);
     }
 
+    @Transactional
     public void cancleSubmit(Long docId, Long memberId) {
         ApprovalDocument document = validateSubmitAuthority(docId, memberId);
 
@@ -93,6 +96,66 @@ public class ApprovalService {
         approvalHistoryRepositoy.save(approvalHistory);
 
         }
+
+        /*
+        *  * * 4. [APPROVE] 승인 (결재자)
+         * - ApprovalLine (현재 결재자): LineStatus 변경 (WAIT -> APPROVED), approvedAt 기록.
+         * - ApprovalHistory: APPROVE 로그 기록.
+         * - 다음 순서 처리:
+         * a) 마지막 결재자가 아닌 경우:
+         * - ApprovalDocument: CurrentSequence를 1 증가시킴.
+         * - ApprovalLine (다음 결재자): LineStatus를 WAIT으로 설정.
+         * b) 최종 결재자인 경우:
+         * - ApprovalDocument: DocStatus 변경 (IN_PROGRESS -> APPROVED).
+         * - (후속 처리: 휴가 날짜 계산 등 추가 비즈니스 로직 발동)
+         * sequence = [2, 3, 4]
+        * */
+    public void approveDocument(Long docId, Long memberId) {
+        /*
+        * 1. document에서 현재 시퀀스를 가져와 line의 sequence로 currentsequence에 해당하는 멤버를 불러온다. (lineRepository 활용)
+        * 2. 현재 결재자의 LineStatus를 APPROVED로 변경하고 ApprovalHistory에 기록한다.
+        * 2.1. 마지막 결재자가 아니면 currentSequence를 1 증가 시키고, 다음 결재자의 LineStatus를 Wait으로 설정한다. (근데 createDocument에서 기본값이 다 wait이긴 한데)
+        * 2.2. 최종 결재자일 경우 ApprovalDocument의 상태를 APPROVED로 변경한다.
+        *
+        * */
+
+        // docId로 Document의 현재 sequence를 뽑아 내야함
+        ApprovalDocument document = approvalDocumentRepository.findById(docId).orElseThrow(
+                () -> new BusinessException(ErrorCode.DOCUMENT_NOT_FOUND)
+        );
+        int currentSequence = document.getCurrentSequence();
+
+        // 현재 문서의 결재선의 sequence가 현재 문서의 CurrentSequence인 approver를 찾아내야 함
+        // 전달 받은 결재자와 결재선의 sequence에 있는 결재자가 다를 경우
+        ApprovalLine currentLine = approvalLineRepository.findByDocumentAndSequenceAndApprover(docId, currentSequence, memberId).orElseThrow(
+                () -> new BusinessException(ErrorCode.NOT_MATCH_APPROVER)
+        );
+
+        // WAIT 상태가 아닌 경우 이미 처리를 한 것임
+        if(currentLine.getLineStatus() != LineStatusEnum.WAIT) {
+            throw new BusinessException(ErrorCode.ALREADY_PROCESS);
+        }
+
+        // LineStatus를 approve로 변경
+        currentLine.approve();
+
+        // 결재 로그에 Approve로 등록
+        ApprovalHistory approvalHistory = ApprovalHistory.builder()
+                .document(docId)
+                .actor(memberId)
+                .actionType(ActionTypeEnum.APPROVE)
+                .build();
+        approvalHistoryRepositoy.save(approvalHistory);
+
+        int nextSequence = currentSequence + 1;
+        boolean hasNextApprover = approvalLineRepository.existsByDocumentAndSequence(docId, nextSequence);
+
+        if(hasNextApprover) {
+            document.nextSequence();
+        } else {
+            document.completeApproval();
+        }
+    }
 
     public ApprovalDocument validateSubmitAuthority(Long docId, Long memberId) {
         ApprovalDocument document = approvalDocumentRepository.findById(docId).orElseThrow(

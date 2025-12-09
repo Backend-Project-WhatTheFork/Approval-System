@@ -43,4 +43,9 @@ public class ApprovalLine {
         this.lineStatus = lineStatus;
         this.approvedAt = approvedAt;
     }
+
+    public void approve() {
+        this.lineStatus = LineStatusEnum.APPROVED;
+        this.approvedAt = LocalDateTime.now();
+    }
 }

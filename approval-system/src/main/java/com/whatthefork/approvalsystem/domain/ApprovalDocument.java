@@ -102,4 +102,12 @@ public class ApprovalDocument {
     public void updateTemp() {
         this.docStatus = DocStatusEnum.TEMP;
     }
+
+    public void nextSequence() {
+        this.currentSequence++;
+    }
+
+    public void completeApproval() {
+        this.docStatus = DocStatusEnum.APPROVED;
+    }
 }
