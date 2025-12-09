@@ -1,5 +1,6 @@
 package com.whatthefork.approvalsystem.repository;
 
+import com.whatthefork.approvalsystem.domain.ApprovalDocument;
 import com.whatthefork.approvalsystem.domain.ApprovalLine;
 import com.whatthefork.approvalsystem.enums.ActionTypeEnum;
 import com.whatthefork.approvalsystem.enums.LineStatusEnum;
@@ -27,7 +28,9 @@ public interface ApprovalLineRepository extends JpaRepository<ApprovalLine, Long
 
     Optional<ApprovalLine> findByDocumentAndSequence(Long docId, int sequence);
 
-    Optional<ApprovalLine> findByDocumentAndApprover(Long document, Long approver);
-
     boolean existsByDocumentAndApprover(Long document, Long approver);
+
+    Optional<ApprovalLine> findByDocumentAndSequenceAndApprover(Long document, int sequence, Long approver);
+
+    boolean existsByDocumentAndSequence(Long document, int nextSequence);
 }
