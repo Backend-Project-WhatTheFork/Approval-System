@@ -1,6 +1,6 @@
 rootProject.name = 'root'
 include 'eureka-server'
-include 'auth-and-security'
+include 'user-service'
 include 'gateway'
 include 'attendance-tracking'
 include 'approval-system'

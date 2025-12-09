@@ -40,7 +40,6 @@ spring:
               filters:
                 - RewritePath=/api/v1/resource-reservation/(?<segment>.*), /$\{segment}
 
-
 eureka:
 
   client:
