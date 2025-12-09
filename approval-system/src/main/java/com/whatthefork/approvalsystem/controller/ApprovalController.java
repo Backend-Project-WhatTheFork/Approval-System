@@ -33,4 +33,11 @@ public class ApprovalController {
         approvalService.approveDocument(docId, memberId);
         return ResponseEntity.ok(ApiResponse.success("결재 승인"));
     }
+
+    @PutMapping("/{docId}/reject")
+    public ResponseEntity<ApiResponse> rejectDocument(/*Long memberId,*/ @PathVariable Long docId) {
+        Long memberId = 101L;
+        approvalService.rejectDocument(docId, memberId);
+        return ResponseEntity.ok(ApiResponse.success("결재 반려 완료"));
+    }
 }
