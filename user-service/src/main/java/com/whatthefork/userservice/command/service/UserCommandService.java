@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.whatthefork.userservice.exception.DuplicateEmailException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -20,16 +22,21 @@ public class UserCommandService {
 
     @Transactional
     public void registerUser(UserCreateRequest request) {
-       User user = User.builder()
-               .name(request.getName())
-               .email(request.getEmail())
-               .password(passwordEncoder.encode(request.getPassword()))
-               .positionCode(request.getPositionCode())
-               .deptId(request.getDeptId())
-               .isDeptLeader(request.isDeptLeader())
-               .isAdmin(request.isAdmin())
-               .role(request.isAdmin() ? UserRole.ADMIN : UserRole.USER)
-               .build();
-       userRepository.save(user);
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateEmailException("이미 사용 중인 이메일입니다: " + request.getEmail());
+        }
+        User user = User.builder()
+                .name(request.getName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .positionCode(request.getPositionCode())
+                .deptId(request.getDeptId())
+                .isDeptLeader(request.isDeptLeader())
+                .isAdmin(request.isAdmin())
+                .role(request.isAdmin() ? UserRole.ADMIN : UserRole.USER)
+                .build();
+        userRepository.save(user);
     }
 }
+
