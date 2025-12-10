@@ -21,9 +21,7 @@ public class ApprovalController {
     }
 
     @PutMapping("/{docId}/submit/cancel")
-    public ResponseEntity<ApiResponse> cancelApproval(@PathVariable Long docId) {
         Long memberId = 101L;
-        approvalService.cancleSubmit(docId, memberId);
         return ResponseEntity.ok(ApiResponse.success("상신 취소 완료"));
     }
 }
