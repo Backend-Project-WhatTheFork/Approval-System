@@ -1,7 +1,6 @@
 package com.whatthefork.approvalsystem.service;
 
 import com.whatthefork.approvalsystem.common.error.BusinessException;
-import com.whatthefork.approvalsystem.common.error.ErrorCode;
 import com.whatthefork.approvalsystem.domain.ApprovalDocument;
 import com.whatthefork.approvalsystem.domain.ApprovalHistory;
 import com.whatthefork.approvalsystem.domain.ApprovalLine;
