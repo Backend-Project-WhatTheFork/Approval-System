@@ -1,4 +1,4 @@
-package com.whatthefork.userservice.jwt;
+package com.whatthefork.approvalsystem.common.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,6 +21,7 @@ public class HeaderAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         String uri = request.getRequestURI();
 
         // swagger 필터 스킵
