@@ -5,29 +5,50 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI() {
-        String jwt = "JWT";
-        SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
-        Components components = new Components().addSecuritySchemes(jwt, new SecurityScheme()
-                .name(jwt)
-                .type(SecurityScheme.Type.HTTP)
-                .scheme("bearer")
-                .bearerFormat("JWT")
-        );
+
+        Info info = new Info()
+                .title("Account Service API")
+                .description("Timedeal Account Service API")
+                .version("1.0.0");
+
+        String jwtSchemeName = "jwtAuth";
+
+        SecurityRequirement securityRequirement = new SecurityRequirement()
+                .addList(jwtSchemeName);
+
+        Components components = new Components()
+                .addSecuritySchemes(jwtSchemeName,
+                        new SecurityScheme()
+                                .name(jwtSchemeName)
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                );
+
+        // Gateway를 통한 API 호출을 위한 서버 설정
+        Server gatewayServer = new Server()
+                .url("http://localhost:8000/api/v1/account")
+                .description("Gateway Server");
+
+        Server localServer = new Server()
+                .url("/")
+                .description("Direct Access");
 
         return new OpenAPI()
-                .components(components)
-                .info(new Info()
-                        .title("Approval System API")
-                        .version("v1.0.0")
-                        .description("APPR API 명세서"))
-                .addSecurityItem(securityRequirement);
+                .info(info)
+                .servers(List.of(gatewayServer, localServer))
+                .addSecurityItem(securityRequirement)
+                .components(components);
     }
 }

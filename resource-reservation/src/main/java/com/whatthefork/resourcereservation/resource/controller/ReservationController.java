@@ -5,6 +5,8 @@ import com.whatthefork.resourcereservation.resource.dto.request.create.CreateRes
 import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateReservationRequest;
 import com.whatthefork.resourcereservation.resource.dto.user.UserDetailsImpl;
 import com.whatthefork.resourcereservation.resource.service.ReservationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +22,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Reservation", description = "예약 관리 API(예약 확인, 생성, 수정, 취소, 만료 예약 확인, 취소 예약 확인")
 @RestController
-//@RequestMapping("/api/v1/reservations")
 @RequestMapping("/reservations")
 @RequiredArgsConstructor
 @Slf4j
@@ -37,21 +39,20 @@ public class ReservationController {
         return userDetails.getUsername();
     }
 
-    // 예약 목록 확인
+    @Operation(summary = "예약 목록 확인", description = "존재하는 예약 목록을 전부 반환합니다.")
     @GetMapping
     public ResponseEntity<ApiResponse> getAllReservations() {
 
         return ResponseEntity.ok(ApiResponse.success(reservationService.getAllReservations()));
     }
 
-    // 예약 생성
+    @Operation(summary = "예약 생성", description = "예약을 생성하고 생성된 예약을 반환합니다.")
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> createReservation
     (@RequestBody CreateReservationRequest reservationRequest) {
 
         String userId = getUserId();
-
         Long castedUserId = Long.parseLong(userId);
 
         switch(reservationRequest.category()) {
@@ -62,19 +63,18 @@ public class ReservationController {
         }
     }
 
-    // 예약 취소
+    @Operation(summary = "예약 취소", description = "예약을 취소하고 취소한 예약을 예약 취소 테이블에 추가한 뒤 해당 예약을 반환합니다.")
     @PostMapping("/cancellations/{reservationId}")
     @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isReservationOwner(principal.username, #reservationId)")
     public ResponseEntity<ApiResponse> cancelReservation(@PathVariable Long reservationId) {
 
         String currentUserId = getUserId();
-
         Long userId = Long.parseLong(currentUserId);
 
         return ResponseEntity.ok(ApiResponse.success(reservationService.cancelReservation(reservationId, userId)));
     }
 
-    // 예약 수정
+    @Operation(summary = "예약 수정", description = "해당 예약을 만든 사용자인지 확인 후 예약을 수정 후 반환합니다.")
     @PatchMapping("/edit/{reservationId}")
     @PreAuthorize("hasRole('ADMIN') or @reservationSecurity.isReservationOwner(principal.username, #reservationId)")
     public ResponseEntity<ApiResponse> editReservation(@PathVariable Long reservationId, @RequestBody UpdateReservationRequest reservationRequest) {
@@ -82,25 +82,23 @@ public class ReservationController {
         return ResponseEntity.ok(ApiResponse.success(reservationService.editReservation(reservationRequest, reservationId)));
     }
 
-    // 내 만료 예약 목록 확인
+    @Operation(summary = "만료 예약 확인", description = "사용자의 모든 만료된 예약츨 반환합니다.")
     @GetMapping("/expired")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> expiredReservations() {
 
         String currentUserId = getUserId();
-
         Long userId = Long.parseLong(currentUserId);
 
         return ResponseEntity.ok(ApiResponse.success(reservationService.getExpiredReservations(userId)));
     }
 
-    // 내 취소 예약 목록 확인
+    @Operation(summary = "취소 예약 확인", description = "사용자의 취소된 예약을 반환합니다.")
     @GetMapping("/canceled")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> canceledReservations() {
 
         String currentUserId = getUserId();
-
         Long userId = Long.parseLong(currentUserId);
 
         return ResponseEntity.ok(ApiResponse.success(reservationService.getCanceledReservations(userId)));

@@ -5,6 +5,8 @@ import com.whatthefork.resourcereservation.resource.dto.request.create.CreateSup
 import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateSuppliesRequest;
 import com.whatthefork.resourcereservation.resource.dto.response.SuppliesResponse;
 import com.whatthefork.resourcereservation.resource.service.SupplyService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Supply", description = "비품 관리 API(비품 조회, 추가, 삭제, 수정, 검색")
 @Slf4j
 @RestController
 //@RequestMapping("/api/v1/supplies")
@@ -29,7 +32,7 @@ public class SuppliesController {
 
     private final SupplyService supplyService;
 
-    // 전체 비품 조회
+    @Operation(summary = "비품 전체 조회", description = "모든 비품 목록을 반환합니다.")
     @GetMapping
     public ResponseEntity<ApiResponse> getSupplies() {
 
@@ -40,7 +43,7 @@ public class SuppliesController {
         return ResponseEntity.ok(ApiResponse.success(suppliesResponsesList));
     }
 
-    // 비품 추가
+    @Operation(summary = "비품 추가", description = "관리자의 권한으로 비품을 추가합니다. 추가된 비품의 DTO를 반환합니다. ")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> createSupply(@RequestBody CreateSuppliesRequest suppliesRequest) {
@@ -49,7 +52,7 @@ public class SuppliesController {
         return ResponseEntity.ok(ApiResponse.success(supplyService.createSupply(suppliesRequest)));
     }
 
-    // 비품 삭제
+    @Operation(summary = "비품 삭제", description = "관리자의 권한으로 비품을 삭제합니다. 삭제된 비품의 DTO를 반환합니다. ")
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteSupply(@PathVariable Long id) {
@@ -60,7 +63,7 @@ public class SuppliesController {
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    // 비품 수정
+    @Operation(summary = "비품 수정", description = "관리자의 권한으로 비품을 수정합니다. 수정된 비품의 DTO를 반환합니다. ")
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateSupply(@PathVariable Long id, @RequestBody UpdateSuppliesRequest suppliesRequest) {
@@ -69,7 +72,7 @@ public class SuppliesController {
         return ResponseEntity.ok(ApiResponse.success(supplyService.updateSupplyById(id, suppliesRequest)));
     }
 
-    // 비품 이름 검색
+    @Operation(summary = "비품 이름 검색", description = "검색된 비품을 반환합니다.")
     @GetMapping("/name/{name}")
     public ResponseEntity<ApiResponse> getSupplyById(@PathVariable String name) {
         log.info("get supply by name: {}", name);

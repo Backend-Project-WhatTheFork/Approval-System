@@ -9,14 +9,8 @@ spring:
       server:
         webflux:
           routes:
-            - id: user-service
-              uri: lb://auth-and-security
-              predicates:
-                - Path=/api/v1/user-service/**
-              filters:
-                - RewritePath=/api/v1/user-service/(?<segment>.*), /$\{segment}
             - id: approval-system
-              uri: lb://approval-system
+              uri: lb://APPROVAL-SYSTEM
               predicates:
                 - Path=/api/v1/approval-system/**
               filters:
@@ -39,13 +33,20 @@ spring:
                 - Path=/api/v1/resource-reservation/**
               filters:
                 - RewritePath=/api/v1/resource-reservation/(?<segment>.*), /$\{segment}
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/api/v1/user-service/**
+              filters:
+                - RewritePath=/api/v1/user-service/(?<segment>.*), /$\{segment}
 
 eureka:
-
   client:
     fetch-registry: true
     register-with-eureka: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
 jwt:
   secret: +i12AQFwws/Del1pGAOB0imXQLGaCNd7dyMF41Mxe6k=
+  expiration: 86400000
