@@ -3,6 +3,7 @@ package com.whatthefork.attendancetracking.annualLeave.controller;
 import com.whatthefork.attendancetracking.annualLeave.dto.AnnualLeaveHistoryResponse;
 import com.whatthefork.attendancetracking.annualLeave.dto.AnnualLeaveResponse;
 import com.whatthefork.attendancetracking.annualLeave.service.AnnualLeaveService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,7 +20,7 @@ public class AnnualLeaveController {
 
     private final AnnualLeaveService annualLeaveService;
 
-    //연차 결재 현황 확인(년도별)
+    @Operation(summary = "연차 현황 조회", description = "연차 현황을 조회합니다.(년도별)")
     @GetMapping("/{year}")
     public ResponseEntity<ApiResponse> getAnnualLeaveSummary(
             @AuthenticationPrincipal String memberIds,
@@ -31,8 +32,7 @@ public class AnnualLeaveController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
-
-    //연차 결재 히스토리 조회
+    @Operation(summary = "연차 결재 히스토리 조회", description = "연차 결재 히스토리를 조회합니다.(년도별)")
     @GetMapping("/{year}/histories")
     public ResponseEntity<ApiResponse> getAnnualLeaveHistories(
             @AuthenticationPrincipal String memberIds,
