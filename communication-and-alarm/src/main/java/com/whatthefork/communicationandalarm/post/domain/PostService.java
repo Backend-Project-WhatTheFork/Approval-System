@@ -30,7 +30,7 @@ public class PostService {
      * 게시글 등록
      * */
     @Transactional
-    public void create(Long memberId, String memberName, CreatePostRequest request) {
+    public void create(Long memberId, CreatePostRequest request) {
 
         Category category = request.getCategory();
         // 임시 관리자 검증
@@ -41,19 +41,19 @@ public class PostService {
         }
 
 
-        Post post = Post.create(
-                memberId,
-                memberName,
-                request.getTitle(),
-                request.getContent(),
-                category
-        );
+//        Post post = Post.create(
+//                memberId,
+//                memberName,
+//                request.getTitle(),
+//                request.getContent(),
+//                category
+//        );
 
-        if (category == Category.ANNOUNCEMENT) {
-            post.pin();
-        }
-
-        postRepository.save(post);
+//        if (category == Category.ANNOUNCEMENT) {
+//            post.pin();
+//        }
+//
+//        postRepository.save(post);
     }
 
     /*

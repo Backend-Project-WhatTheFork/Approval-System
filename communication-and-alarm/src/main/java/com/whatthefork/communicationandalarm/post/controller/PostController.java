@@ -7,13 +7,16 @@ import com.whatthefork.communicationandalarm.common.dto.response.GetPostResponse
 import com.whatthefork.communicationandalarm.common.dto.response.PostResponse;
 import com.whatthefork.communicationandalarm.common.utils.Page;
 import com.whatthefork.communicationandalarm.post.domain.PostService;
-//import com.whatthefork.communicationandalarm.security.MemberClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
-//    private final MemberClient memberClient;
+    // private final MemberRepository memberRepository;
 
     /*
     * 게시글 등록
@@ -32,12 +35,13 @@ public class PostController {
     @Operation(summary = "게시글 등록", description = "새 게시글을 등록합니다. ")
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createPost(
-            /*@PathVariable Long memberId,*/
-            @RequestParam Long memberId,
-            @RequestParam String memberName,
+            @AuthenticationPrincipal String userIds,
             @RequestBody @Valid CreatePostRequest request
     ) {
-        postService.create(memberId, memberName, request);
+        System.out.println("userIds = " + userIds);
+        Long memberId = Long.parseLong(userIds);
+
+        postService.create(memberId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(null));
     }
 
@@ -48,9 +52,11 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> updatePost(
             @PathVariable Long postId,
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal String userIds,
             @RequestBody @Valid UpdatePostRequest request
     ) {
+        Long memberId = Long.parseLong(userIds);
+
         postService.update(memberId, postId, request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
     }
@@ -61,9 +67,11 @@ public class PostController {
     @Operation(summary = "게시글 삭제", description = "게시글을 삭제합니다. ")
     @DeleteMapping("/{postId}")
     public ResponseEntity<ApiResponse<Void>> deletePost(
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal String userIds,
             @PathVariable Long postId
     ) {
+        Long memberId = Long.parseLong(userIds);
+
         postService.delete(memberId, postId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
     }
