@@ -5,6 +5,8 @@ import com.whatthefork.resourcereservation.resource.dto.request.create.CreateCor
 import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateCorporateCarRequest;
 import com.whatthefork.resourcereservation.resource.dto.response.CorporateCarResponse;
 import com.whatthefork.resourcereservation.resource.service.CorporateCarService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Corporate Car", description = "법인차량 API (추가, 수정, 삭제, 조회")
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/corporate-cars")
@@ -28,6 +31,7 @@ public class CorporateCarController {
     private final CorporateCarService corporateCarService;
 
     // 법인차량 전체 목록 조회
+    @Operation(summary = "법인차량 전체 조회", description = "존재하는 법인차량 전체 조회")
     @GetMapping
     public ResponseEntity<ApiResponse> getCorporateCars() {
 
@@ -39,6 +43,7 @@ public class CorporateCarController {
     }
 
     // 법인차량 추가
+    @Operation(summary = "법인차량 추가", description = "새로운 법인차량 추가")
     @PostMapping
     public ResponseEntity<ApiResponse> createCorporateCar(@RequestBody CreateCorporateCarRequest corporateCarRequest) {
         log.info("create corporate car: {}", corporateCarRequest);
@@ -47,6 +52,7 @@ public class CorporateCarController {
     }
 
     // 법인차량 삭제
+    @Operation(summary = "법인차량 삭제", description = "존재하는 법인차량 삭제")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteCorporateCar(@PathVariable Long id) {
         log.info("delete corporate car: {}", id);
@@ -57,6 +63,7 @@ public class CorporateCarController {
     }
 
     // 법인차량 정보 수정
+    @Operation(summary = "법인차량 수정", description = "법인차량에 대한 정보 수정")
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse> updateCorporateCar(@PathVariable Long id, @RequestBody UpdateCorporateCarRequest corporateCarRequest) {
         log.info("update corporate car: {}", corporateCarRequest);
@@ -65,6 +72,7 @@ public class CorporateCarController {
     }
 
     // 법인차량 이름으로 조회
+    @Operation(summary = "법인차량 이름 검색", description = "이름으로 법인차량 검색")
     @GetMapping("/name/{name}")
     public ResponseEntity<ApiResponse> getCorporateCarByName(@PathVariable String name) {
         log.info("get corporate car by name : {}", name);
@@ -73,6 +81,7 @@ public class CorporateCarController {
     }
 
     // 법인차량 최대 인원으로 조회
+    @Operation(summary = "법인차량 최대인원 검색", description = "법인차량 최대 인원으로 검색")
     @GetMapping("/maxCapacity/{maxCapacity}")
     public ResponseEntity<ApiResponse> getCorporateCarByMaxCapacity(@PathVariable int maxCapacity) {
         log.info("get corporate car by maxCapacity : {}", maxCapacity);
