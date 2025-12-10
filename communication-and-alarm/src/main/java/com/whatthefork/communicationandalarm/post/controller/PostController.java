@@ -38,10 +38,7 @@ public class PostController {
             @AuthenticationPrincipal String userIds,
             @RequestBody @Valid CreatePostRequest request
     ) {
-        System.out.println("userIds = " + userIds);
-        Long memberId = Long.parseLong(userIds);
-
-        postService.create(memberId, request);
+        postService.create(userIds, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(null));
     }
 

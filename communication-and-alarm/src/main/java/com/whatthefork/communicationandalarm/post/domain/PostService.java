@@ -1,6 +1,10 @@
 package com.whatthefork.communicationandalarm.post.domain;
 
+import com.whatthefork.communicationandalarm.client.MemberClient;
 import com.whatthefork.communicationandalarm.comment.domain.CommentRepository;
+import com.whatthefork.communicationandalarm.common.ApiResponse;
+import com.whatthefork.communicationandalarm.common.dto.response.UserDTO;
+import com.whatthefork.communicationandalarm.common.dto.response.UserDetailResponse;
 import com.whatthefork.communicationandalarm.common.enums.Category;
 import com.whatthefork.communicationandalarm.common.utils.OffsetLimit;
 import com.whatthefork.communicationandalarm.common.utils.Page;
@@ -25,20 +29,23 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final MemberClient memberClient;
 
     /*
      * 게시글 등록
      * */
     @Transactional
-    public void create(Long memberId, CreatePostRequest request) {
+    public void create(String memberId, CreatePostRequest request) {
+        ApiResponse<UserDetailResponse> info = memberClient.getUserDetail(memberId);
+        UserDTO user = info.getData().getUser();
 
         Category category = request.getCategory();
         // 임시 관리자 검증
-        boolean isAdmin = memberId != null && memberId.equals(1L);
-
-        if (category == Category.ANNOUNCEMENT && !isAdmin) {
-            throw new GlobalException(ErrorCode.POST_ACCESS_DENIED);
-        }
+//        boolean isAdmin = memberId != null && memberId.equals(1L);
+//
+//        if (category == Category.ANNOUNCEMENT && !isAdmin) {
+//            throw new GlobalException(ErrorCode.POST_ACCESS_DENIED);
+//        }
 
 
 //        Post post = Post.create(

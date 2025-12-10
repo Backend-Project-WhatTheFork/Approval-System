@@ -1,4 +1,4 @@
-package com.whatthefork.userservice.query.dto;
+package com.whatthefork.communicationandalarm.common.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
