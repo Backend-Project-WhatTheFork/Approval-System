@@ -2,6 +2,7 @@ package com.whatthefork.attendancetracking.annualLeave.controller;
 
 import com.whatthefork.attendancetracking.annualLeave.dto.AnnualLeaveHistoryResponse;
 import com.whatthefork.attendancetracking.annualLeave.dto.AnnualLeaveResponse;
+import com.whatthefork.attendancetracking.annualLeave.dto.LeaveAnnualRequestDto;
 import com.whatthefork.attendancetracking.annualLeave.service.AnnualLeaveService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import com.whatthefork.attendancetracking.common.ApiResponse;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.whatthefork.attendancetracking.common.ApiResponse.success;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class AnnualLeaveController {
         Long memberId =  Long.parseLong(memberIds);
 
         Optional<AnnualLeaveResponse> response = annualLeaveService.getAnnualLeave(memberId, year);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(success(response));
     }
 
     @Operation(summary = "연차 결재 히스토리 조회", description = "연차 결재 히스토리를 조회합니다.(년도별)")
@@ -42,7 +45,15 @@ public class AnnualLeaveController {
 
         List<AnnualLeaveHistoryResponse> responses =
                 annualLeaveService.getAnnualLeaveHistories(memberId, year);
-        return ResponseEntity.ok(ApiResponse.success(responses));
+        return ResponseEntity.ok(success(responses));
+    }
+
+    @PostMapping("/api/v1/attendance-tracking/annual-leave/decrease")
+    public ResponseEntity<Void> decreaseAnnual(@RequestBody LeaveAnnualRequestDto requestDto){
+
+        AnnualLeaveHistoryResponse response = annualLeaveService.decreaseAnnual(requestDto);
+
+        return ResponseEntity.ok().build();
     }
 
 
