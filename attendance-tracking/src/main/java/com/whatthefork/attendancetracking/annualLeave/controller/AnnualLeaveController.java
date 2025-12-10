@@ -5,6 +5,7 @@ import com.whatthefork.attendancetracking.annualLeave.dto.AnnualLeaveResponse;
 import com.whatthefork.attendancetracking.annualLeave.service.AnnualLeaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.whatthefork.attendancetracking.common.ApiResponse;
 
@@ -13,27 +14,32 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/annualLeave")
 public class AnnualLeaveController {
 
     private final AnnualLeaveService annualLeaveService;
 
     //연차 결재 현황 확인(년도별)
-    @GetMapping("/{memberId}/{year}")
+    @GetMapping("/{year}")
     public ResponseEntity<ApiResponse> getAnnualLeaveSummary(
-            @PathVariable Long memberId,
+            @AuthenticationPrincipal String memberIds,
             @PathVariable Integer year
     ) {
+        Long memberId =  Long.parseLong(memberIds);
+
         Optional<AnnualLeaveResponse> response = annualLeaveService.getAnnualLeave(memberId, year);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
 
     //연차 결재 히스토리 조회
-    @GetMapping("/{memberId}/{year}/histories")
+    @GetMapping("/{year}/histories")
     public ResponseEntity<ApiResponse> getAnnualLeaveHistories(
-            @PathVariable Long memberId,
+            @AuthenticationPrincipal String memberIds,
             @PathVariable Integer year
     ) {
+        Long memberId =  Long.parseLong(memberIds);
+
         List<AnnualLeaveHistoryResponse> responses =
                 annualLeaveService.getAnnualLeaveHistories(memberId, year);
         return ResponseEntity.ok(ApiResponse.success(responses));
