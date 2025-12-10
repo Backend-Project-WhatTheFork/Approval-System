@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -44,6 +45,7 @@ public class CorporateCarController {
 
     // 법인차량 추가
     @Operation(summary = "법인차량 추가", description = "새로운 법인차량 추가")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ApiResponse> createCorporateCar(@RequestBody CreateCorporateCarRequest corporateCarRequest) {
         log.info("create corporate car: {}", corporateCarRequest);
@@ -53,6 +55,7 @@ public class CorporateCarController {
 
     // 법인차량 삭제
     @Operation(summary = "법인차량 삭제", description = "존재하는 법인차량 삭제")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse> deleteCorporateCar(@PathVariable Long id) {
         log.info("delete corporate car: {}", id);
@@ -64,6 +67,7 @@ public class CorporateCarController {
 
     // 법인차량 정보 수정
     @Operation(summary = "법인차량 수정", description = "법인차량에 대한 정보 수정")
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse> updateCorporateCar(@PathVariable Long id, @RequestBody UpdateCorporateCarRequest corporateCarRequest) {
         log.info("update corporate car: {}", corporateCarRequest);

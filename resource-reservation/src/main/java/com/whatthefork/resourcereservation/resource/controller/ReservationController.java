@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,8 @@ public class ReservationController {
 
     private final ReservationService reservationService;
     private final Long userId = 3L;   // 나중에 토큰에서 userId 뽑아와야 함
+
+
 
     // 예약 목록 확인
     @Operation(summary = "예약 전체 조회", description = "존재하는 예약 전체 조회")
