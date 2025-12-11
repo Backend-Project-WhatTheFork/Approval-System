@@ -26,6 +26,14 @@ public class UserQueryController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ApiResponse<UserDetailResponse>> findUserDetail(
+            @PathVariable Long userId
+    ) {
+        UserDetailResponse response = userQueryService.getUserDetail(userId);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/users")
     public ResponseEntity<ApiResponse<UserListResponse>> getUsers() {
