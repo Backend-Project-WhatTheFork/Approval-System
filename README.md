@@ -1,59 +1,138 @@
 # 사내 전자결재 시스템 ON:S
-> 휴가, 사내 커뮤니티, 회사 자원 사용 예약까지 한 번에
+> **휴가, 사내 커뮤니티, 회사 자원 사용 예약까지 한 번에**
+
+</br>
 
 ----
+
+</br>
 
 ## 목차
 ### 1. 팀 소개
 ### 2. 프로젝트 개요
 ### 3. 유사 서비스
-### 4. 개발 환경
+### 4. 개발 환경 및 협업 도구 
 ### 5. 프로젝트 구조
 ### 6. 프로젝트 기획
-### 7. 프로젝트 기능
-### 8. 서버
-### 9. 회고
+### 7. 컨벤션
+### 8. 프로젝트 기능
+### 9. 서버
+### 10. 회고
+
+</br>
 
 ----
+
+</br>
 
 ## 1. 팀 소개
 <table width="100%">
   <thead>
     <tr align="center">
-      <th width="20%">강윤혜🐼/th>
-      <th width="20%">김채우🐾/th>
-      <th width="20%">송형욱🦉/th>
-      <th width="20%">윤홍석🐿️/th>
+      <th width="20%">강윤혜🐼</th>
+      <th width="20%">김채우🐾</th>
+      <th width="20%">송형욱🦉</th>
+      <th width="20%">윤홍석🐿️</th>
       <th width="20%">진희헌🦍</th>
     </tr>
   </thead>
   <tbody>
     <tr align="center">
-      <td><img src= "https://github.com/user-attachments/assets/826e640b-c388-4dba-9fa7-2414242fa3f1" width="60%" /></td>
-      <td><img src="https://github.com/user-attachments/assets/34156882-bfdf-4536-bdf5-67b5c139e4ca" width="60%" /></td>
-      <td><img src="https://github.com/user-attachments/assets/0e7cb364-3ce2-4729-87f9-94ba1eb31af9" width="60%" /></td>
-      <td><img src="https://github.com/user-attachments/assets/dd56732e-3798-4b10-8d32-ef5a3d0da673" width="60%" /></td>
-      <td><img src="https://github.com/user-attachments/assets/068fd2f2-d0e8-4a66-8973-b01502df6976" width="60%" /></td>
+      <td><img src="https://github.com/user-attachments/assets/826e640b-c388-4dba-9fa7-2414242fa3f1" width="80%" /></td>
+      <td><img src="https://github.com/user-attachments/assets/9bbce749-38fc-4497-8cfc-08de00899d67" width="80%" /></td>
+      <td><img src="https://github.com/user-attachments/assets/06dfb26a-3f80-4b47-92a8-e428e77dd81f" width="80%" /></td>
+      <td><img src="https://github.com/user-attachments/assets/63278d3c-c088-4ae8-a719-2f3a9a6fd832" width="80%" /></td>
+      <td><img src="https://github.com/user-attachments/assets/508e961d-a673-4b65-a2bf-11d01702ed09" width="80%" /></td>
     </tr>
   </tbody>
 </table>
 
 
-# Back-end
-## 공통 사항
+</br>
+
+----
+
+</br>
+
+## 2. 프로젝트 개요
+### 소개
+- **ON:S(ON System)** 는 모든 업무가 이 시스템 위에서 켜진다는 의미를 갖습니다. 
+- 휴가 상신과 결재, 사내 공지사항, 회사 자원 예약 및 사용, 직원 등록과 해제 등이 이루어집니다. 
+### 선정 이유
+- 1차, 2차, 최종 결재자 등으로 이루어진 계층 구조를 JPA를 이용하여 구현해 보고자 하였습니다.
+- 여러 테이블이 복합적으로 얽혀 있는 상태에서 데이터를 주고받아 사용하는 것을 구현하는 것이 가장 큰 목표였습니다. 
+### 주요 기능
+- 인증/보안
+- 전자 결재
+- 출퇴근 기록 및 연차 관리
+- 자원 예약
+- 사내 게시판 및 공지사항 확인
+
+
+</br>
+
+----
+
+</br>
+
+## 3. 유사 서비스 
+### 하이웍스
+- 그룹웨어, 경비지출관리, 근무관리 등의 기능을 지원합니다.
+- 기업 메일과 전자결재 등 필수 기능에 집중하여 합리적인 가격에 제공합니다.
+- 중소기업 및 스타트업 초기에 비용을 낮추고 핵심 기능만 빠르게 도입하려는 기업을 타겟팅합니다.
+### 더존 비즈온
+- 회계, 인사, 세무 관리와 결재 시스템을 연동해 제공합니다.
+- 자동 전표 처리, 자금 관리, 근태 연동이 핵심 기능입니다.
+- 중견기업 및 제조/유통업재무/회계팀의 업무 비중이 높으며 정확한 자금 통제가 필요한 기업을 타겟팅합니다.
+
+
+</br>
+
+----
+
+</br>
+
+## 4. 개발 환경 및 협업 도구
+### 개발 환경
+- Java <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white"> 
+- MariaDB <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white">
+- SpringBoot <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+- Spring Security <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
+### IDE & Tools
+- IntelliJ <img src="https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white">
+- Git <img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white">
+### 협업 도구
+- Discord <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white">
+- Notion <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+- Github <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white">
+- Google Drive <img src="https://img.shields.io/badge/Google%20Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white">
+- Jira <img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white">
+  - https://chaewookim2877.atlassian.net/jira/software/projects/APPR/boards/1/backlog?epics=visible
+
+
+</br>
+
+----
+
+</br>
+
+## 5. 컨벤션
+## Back-end
+### 공통 사항
 - 단위 테스트 작성(service 메소드 별로) : Junit 사용
 - 다른 사람이 알아보기 쉽도록 주석처리해야 합니다.
     - javadoc 형식 https://jake-seo-dev.tistory.com/59
 - 지라 티켓 생성하고 작업 시작합시다.
 - 사용 내역 같은 로그 확인할 수 있도록 잘 남겨야 합니다.
 
+
 <br>
 
-## 개발규칙
+### 개발규칙
 
-### ⭐ Code Convention
+**⭐ Code Convention**
 
----
+
 
 <details>
 <summary style = " font-size:1.3em;">Naming</summary>
@@ -75,13 +154,13 @@
 <summary style = " font-size:1.3em;">Comment</summary>
 <div markdown="1">
 
-### 1. 한줄 주석은 // 를 사용한다.
+**1. 한줄 주석은 // 를 사용한다.**
 
 ```java
 // 하이~
 ```
 
-### 2. Bracket 사용 시 내부에 주석을 작성한다.
+**2. Bracket 사용 시 내부에 주석을 작성한다.**
 
 ```java
 /*
@@ -89,7 +168,7 @@
 */
 ```
 
-### 3. 주요 함수에 대한 주석
+**3. 주요 함수에 대한 주석**
 
 ```java
 /*
@@ -106,24 +185,23 @@ public User getUser(Long idx)
 <summary style = " font-size:1.3em;">Import</summary>
 <div markdown="1">
 
-### 1. 소스파일당 1개의 탑레벨 클래스를 담기
+**1. 소스파일당 1개의 탑레벨 클래스를 담기**
 
 > 탑레벨 클래스(Top level class)는 소스 파일에 1개만 존재해야 한다. ( 탑레벨 클래스 선언의 컴파일타임 에러 체크에 대해서는 [Java Language Specification 7.6](http://docs.oracle.com/javase/specs/jls/se7/html/jls-7.html#jls-7.6) 참조 )
 
-### 2. static import에만 와일드 카드 허용
+**2. static import에만 와일드 카드 허용**
 
 > 클래스를 import할때는 와일드카드(`*`) 없이 모든 클래스명을 다 쓴다. static import에서는 와일드카드를 허용한다.
 
-### 3. 애너테이션 선언 후 새줄 사용
+**3. 애너테이션 선언 후 새줄 사용**
 
 > 클래스, 인터페이스, 메서드, 생성자에 붙는 애너테이션은 선언 후 새줄을 사용한다. 이 위치에서도 파라미터가 없는 애너테이션 1개는 같은 줄에 선언할 수 있다.
 
-
-### 4. 배열에서 대괄호는 타입 뒤에 선언
+**4. 배열에서 대괄호는 타입 뒤에 선언**
 
 > 배열 선언에 오는 대괄호(`[]`)는 타입의 바로 뒤에 붙인다. 변수명 뒤에 붙이지 않는다.
 
-### 5. `long`형 값의 마지막에 `L`붙이기
+**5. `long`형 값의 마지막에 `L`붙이기**
 
 > long형의 숫자에는 마지막에 대문자 'L’을 붙인다. 소문자 'l’보다 숫자 '1’과의 차이가 커서 가독성이 높아진다.
 
@@ -133,7 +211,7 @@ public User getUser(Long idx)
 <summary style = " font-size:1.3em;">URL</summary>
 <div markdown="1">
 
-### URL
+**URL**
 
 URL은 RESTful API 설계 가이드에 따라 작성합니다.
 
@@ -149,15 +227,14 @@ URL은 RESTful API 설계 가이드에 따라 작성합니다.
 
 <br>
 
-### ☀️ Commit Convention
+**☀️ Commit Convention**
 
----
 
 <details>
 <summary style = " font-size:1.3em;">Rules</summary>
 <div markdown="1">
 
-### 1. Git Flow
+**1. Git Flow**
 
 작업 시작 시 선행되어야 할 작업은 다음과 같습니다.
 
@@ -169,7 +246,7 @@ URL은 RESTful API 설계 가이드에 따라 작성합니다.
 > 5. 이전에 merge된 작업이 있을 경우 다른 branch에서 진행하던 작업에 merge된 작업을 pull 받아옵니다.
 > 6. 종료된 issue와 pull request의 label을 관리합니다.
 
-### 2. IntelliJ
+**2. IntelliJ**
 
 IntelliJ로 작업을 진행하는 경우, 작업 시작 시 선행되어야 할 작업은 다음과 같습니다.
 
@@ -188,7 +265,7 @@ IntelliJ로 작업을 진행하는 경우, 작업 시작 시 선행되어야 할
 > 13. 종료된 issue와 pull request의 label과 milestone을 관리합니다.
 
 
-### 3. Etc
+**3. Etc**
 
 준수해야 할 규칙은 다음과 같습니다.
 
@@ -202,26 +279,26 @@ IntelliJ로 작업을 진행하는 경우, 작업 시작 시 선행되어야 할
 <summary style = " font-size:1.3em;">Branch</summary>
 <div markdown="1">
 
-### 1. Branch
+**1. Branch**
 
 branch는 작업 단위 & 기능 단위로 생성하며 이는 issue를 기반으로 합니다.
 
-### 2. Branch Naming Rule
+**2. Branch Naming Rule**
 
 branch를 생성하기 전 issue를 먼저 작성합니다. issue 작성 후 생성되는 번호와 domain 명을 조합하여 branch의 이름을 결정합니다. `<Prefix>/<JiraEpicNumber>-<Domain>` 의 양식을 준수합니다.
 
-### 3. Prefix
+**3. Prefix**
 
 - `main` : 개발이 완료된 산출물이 저장될 공간입니다.
 - `develop`: feature branch에서 구현된 기능들이 merge될 default branch 입니다.
 - `feature`: 기능을 개발하는 branch 입니다. 이슈 별 & 작업 별로 branch를 생성 후 기능을 개발하며 naming은 소문자를 사용합니다.
 
-### 4. Domain
+**4. Domain**
 
 - `approval`, `attendance`, `auth`, `security`, `comm`, `alarm`, `resource`, `error`, `config` 
 
 
-### 5. Etc
+**5. Etc**
 
 - `feature/APPR-2-approval`, `feature/APPR-1-config`
 
@@ -233,7 +310,7 @@ branch를 생성하기 전 issue를 먼저 작성합니다. issue 작성 후 생
 <summary style = " font-size:1.3em;">Issue</summary>
 <div markdown="1">
 
-### 1. Issue
+**1. Issue**
 
 작업 시작 전 issue 생성이 선행되어야 합니다. issue 는 작업 단위 & 기능 단위로 생성하며 생성 후 표시되는 issue number 를 참조하여 branch 이름과 commit message를 작성합니다.
 
@@ -241,11 +318,11 @@ issue 제목에는 기능의 대표적인 설명을 적고 내용에는 세부�
 
 issue 생성 시 github 오른편의 assignee, label을 적용합니다. assignee는 해당 issue 담당자, label은 작업 내용을 추가합니다.
 
-### 2. Issue Naming Rule
+**2. Issue Naming Rule**
 
 `[<Prefix>] <Description>` 의 양식을 준수하되, prefix는 commit message convention을 따릅니다.
 
-### 3. Etc
+**3. Etc**
 
 <aside>
 [feat] 약속 잡기 API 구현
@@ -262,7 +339,7 @@ issue 생성 시 github 오른편의 assignee, label을 적용합니다. assigne
 <summary style = " font-size:1.3em;">Commit</summary>
 <div markdown="1">
 
-### 1. Commit Message Convention
+**1. Commit Message Convention**
 
 `[<Prefix>] #<Issue_Number> <Description>` 의 양식을 준수합니다.
 
@@ -282,15 +359,15 @@ issue 생성 시 github 오른편의 assignee, label을 적용합니다. assigne
 <summary style = " font-size:1.3em;">Pull Request</summary>
 <div markdown="1">
 
-### 1. Pull Request
+**1. Pull Request**
 
 develop & main branch로 merge할 때에는 pull request가 필요합니다. pull request의 내용에는 변경된 사항에 대한 설명을 명시합니다.
 
-### 2. Pull Request Naming Rule
+**2. Pull Request Naming Rule**
 
 `[<Prefix>] <Description>` 의 양식을 준수하되, prefix는 commit message convention을 따릅니다.
 
-### 3. Etc
+**3. Etc**
 
 [feat] 약속 잡기 API 구현
 <br/>[chore] spring data JPA 의존성 추가
