@@ -121,6 +121,8 @@ public class ApprovalService {
 
                 annualLeaveFeignClient.decreaseAnnualLeave(requestDto);
             } catch (Exception e) {
+                System.out.println("에러 타입: " + e.getClass().getName());
+                System.out.println("에러 메시지: " + e.getMessage());
                 throw new BusinessException(ErrorCode.ANNUAL_LEAVE_FAILURE);
             }
         }

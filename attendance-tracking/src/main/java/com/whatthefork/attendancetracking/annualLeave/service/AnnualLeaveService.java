@@ -13,6 +13,7 @@ import com.whatthefork.attendancetracking.common.error.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -81,6 +82,7 @@ public class AnnualLeaveService {
                 .toList();
     }
 
+    @Transactional
     public AnnualLeaveHistoryResponse decreaseAnnual(LeaveAnnualRequestDto requestDto) {
 
         AnnualLeave annualLeave = annualLeaveRepository.findByMemberIdAndYear(requestDto.getMemberId(), requestDto.getStartDate().getYear());
