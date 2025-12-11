@@ -48,10 +48,10 @@ public class AnnualLeaveController {
         return ResponseEntity.ok(success(responses));
     }
 
-    @PostMapping("/api/v1/attendance-tracking/annual-leave/decrease")
+    @PostMapping("/decrease")
     public ResponseEntity<Void> decreaseAnnual(@RequestBody LeaveAnnualRequestDto requestDto){
 
-        AnnualLeaveHistoryResponse response = annualLeaveService.decreaseAnnual(requestDto);
+        annualLeaveService.decreaseAnnual(requestDto);
 
         return ResponseEntity.ok().build();
     }
