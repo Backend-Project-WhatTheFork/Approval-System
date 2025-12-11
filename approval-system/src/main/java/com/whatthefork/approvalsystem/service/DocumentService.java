@@ -7,7 +7,6 @@ import com.whatthefork.approvalsystem.domain.ApprovalDocument;
 import com.whatthefork.approvalsystem.domain.ApprovalHistory;
 import com.whatthefork.approvalsystem.domain.ApprovalLine;
 import com.whatthefork.approvalsystem.domain.ApprovalReferrer;
-import com.whatthefork.approvalsystem.domain.member.MemberRepository;
 import com.whatthefork.approvalsystem.dto.request.CreateDocumentRequestDto;
 import com.whatthefork.approvalsystem.dto.request.UpdateDocumentRequestDto;
 import com.whatthefork.approvalsystem.dto.response.ApprovalLineResponseDto;
@@ -41,7 +40,6 @@ public class DocumentService {
     private final ApprovalLineRepository approvalLineRepository;
     private final ApprovalHistoryRepositoy approvalHistoryRepositoy;
     private final ApprovalReferrerRepository approvalReferrerRepository;
-    private final MemberRepository memberRepository;
     private final UserFeignClient userFeignClient;
 
     @Transactional
@@ -334,10 +332,16 @@ public class DocumentService {
             throw new BusinessException(ErrorCode.DRAFTER_EQUALS_APPROVER);
         }
 
-        long existingApproverCount = memberRepository.countAllByIdIn(approvalIds);
+        for (Long approverId : approvalIds) {
+            try {
+                ApiResponse<UserDetailResponse> response = userFeignClient.findUserDetail(approverId);
 
-        if (existingApproverCount != approvalIds.size()) {
-            throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+                if (response == null || response.getData() == null || response.getData().getUser() == null) {
+                    throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+                }
+            } catch (Exception e) {
+                throw new BusinessException(ErrorCode.MEMBER_NOT_FOUND);
+            }
         }
     }
 
