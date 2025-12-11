@@ -44,6 +44,15 @@
       <td><img src="https://github.com/user-attachments/assets/508e961d-a673-4b65-a2bf-11d01702ed09" width="80%" /></td>
     </tr>
   </tbody>
+  <tbody>
+    <tr align="center">
+      <td>연차/근태</td>
+      <td>자원 관리</td>
+      <td>전자결재</td>
+      <td>보안/권한</td>
+      <td>게시판/공지사항</td>
+    </tr>
+  </tbody>
 </table>
 
 
