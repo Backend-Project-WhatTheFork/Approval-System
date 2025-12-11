@@ -5,6 +5,7 @@ import com.whatthefork.resourcereservation.exception.BusinessException;
 import com.whatthefork.resourcereservation.exception.ErrorCode;
 import com.whatthefork.resourcereservation.resource.dto.request.create.CreateReservationRequest;
 import com.whatthefork.resourcereservation.resource.dto.request.update.UpdateReservationRequest;
+import com.whatthefork.resourcereservation.resource.enums.ResourceCategory;
 import com.whatthefork.resourcereservation.resource.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,8 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @Tag(name = "Reservation", description = "회의실 API (추가, 수정, 삭제, 조회")
 @RestController
@@ -50,14 +49,40 @@ public class ReservationController {
 
     // 예약 목록 확인
     @Operation(summary = "예약 전체 조회", description = "존재하는 예약 전체 조회")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public ResponseEntity<ApiResponse> getAllReservations() {
 
         return ResponseEntity.ok(ApiResponse.success(reservationService.getAllReservations()));
     }
 
+    // 카테고리에 따른 내 예약 목록 확인
+    @Operation(summary = "카테고리에 따른 내 예약 확인", description = "카테고리에 따른 사용자 본인의 예약 조회")
+    @PreAuthorize("hasRole('ADMIN') || reservationSecurity.isReservationOwner(principal.username, #id)")
+    @GetMapping("/{id}/{category}")
+    public ResponseEntity<ApiResponse> getMyReservationByCategory(@PathVariable Long id, @PathVariable ResourceCategory category) {
+
+        String userName = getUserId();
+        Long userId = Long.parseLong(userName);
+
+        return ResponseEntity.ok(ApiResponse.success(reservationService.getMyReservationsByCategory(userId, category)));
+    }
+
+    // 내 예약 목록 확인
+    @Operation(summary = "내 예약 확인", description = "사용자 본인의 예약 조회")
+    @PreAuthorize("hasRole('ADMIN') || reservationSecurity.isReservationOwner(principal.username, #id)")
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse> getMyReservation(@PathVariable Long id) {
+
+        String userName = getUserId();
+        Long userId = Long.parseLong(userName);
+
+        return ResponseEntity.ok(ApiResponse.success(reservationService.getMyReservations(userId)));
+    }
+
     // 예약 생성
     @Operation(summary = "예약 생성", description = "회의실, 법인차량, 비품 중 한 카테고리의 예약 생성")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<ApiResponse> createReservation(@RequestBody CreateReservationRequest reservationRequest) {
 
@@ -95,8 +120,8 @@ public class ReservationController {
 
     // 내 만료 예약 목록 확인
     @Operation(summary = "만료 예약 조회", description = "사용자의 예약 중 만료된 항목을 조회")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/expired")
-    @PreAuthorize("hasRole('ADMIN') || reservationSecurity.isReservationOwner(principal.username, #id)")
     public ResponseEntity<ApiResponse> expiredReservations() {
 
         String userName = getUserId();
@@ -107,8 +132,8 @@ public class ReservationController {
 
     // 내 취소 예약 목록 확인
     @Operation(summary = "취소 예약 목록 확인", description = "사용자의 예약 중 취소된 항목을 조회")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/canceled")
-    @PreAuthorize("hasRole('ADMIN') || reservationSecurity.isReservationOwner(principal.username, #id)")
     public ResponseEntity<ApiResponse> canceledReservations() {
 
         String userName = getUserId();
