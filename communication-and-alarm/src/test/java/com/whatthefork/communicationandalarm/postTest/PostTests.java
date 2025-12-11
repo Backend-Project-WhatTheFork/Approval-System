@@ -1,9 +1,13 @@
 package com.whatthefork.communicationandalarm.postTest;
 
+import com.whatthefork.communicationandalarm.client.MemberClient;
 import com.whatthefork.communicationandalarm.comment.domain.CommentRepository;
+import com.whatthefork.communicationandalarm.common.ApiResponse;
 import com.whatthefork.communicationandalarm.common.dto.request.CreatePostRequest;
 import com.whatthefork.communicationandalarm.common.dto.response.GetPostResponse;
 import com.whatthefork.communicationandalarm.common.dto.response.PostResponse;
+import com.whatthefork.communicationandalarm.common.dto.response.UserDTO;
+import com.whatthefork.communicationandalarm.common.dto.response.UserDetailResponse;
 import com.whatthefork.communicationandalarm.common.enums.Category;
 import com.whatthefork.communicationandalarm.common.exception.GlobalException;
 import com.whatthefork.communicationandalarm.common.utils.Page;
@@ -18,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 
@@ -25,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -43,6 +48,9 @@ public class PostTests {
     @Mock
     private CommentRepository commentRepository;
 
+    @Mock
+    private MemberClient memberClient;
+
     @Nested
     @DisplayName("게시글 등록")
     class CreatePost {
@@ -51,10 +59,24 @@ public class PostTests {
         @DisplayName("관리자는 공지사항 게시글을 등록할 수 있으며 자동으로 상단 고정된다.")
         void adminCanCreateAnnouncementAndPinned() {
             // given
-            Long adminId = 1L; // 관리자
-
+            String adminId = "1"; // 관리자
             CreatePostRequest request = org.mockito.Mockito.mock(CreatePostRequest.class);
             given(request.getCategory()).willReturn(Category.ANNOUNCEMENT);
+            given(request.getTitle()).willReturn("공지");
+            given(request.getContent()).willReturn("내용");
+
+            UserDTO adminUser = org.mockito.Mockito.mock(UserDTO.class);
+            given(adminUser.getName()).willReturn("관리자");
+            given(adminUser.getRole()).willReturn("ADMIN");
+
+            UserDetailResponse userDetail = org.mockito.Mockito.mock(UserDetailResponse.class);
+            given(userDetail.getUser()).willReturn(adminUser);
+
+            ApiResponse<UserDetailResponse> apiResponse =
+                    Mockito.mock(ApiResponse.class);
+            given(apiResponse.getData()).willReturn(userDetail);
+
+            given(memberClient.getUserDetail(adminId)).willReturn(apiResponse);
 
             // PostRepository.save 가 호출되면 전달받은 Post 를 그대로 반환하도록 설정
             ArgumentCaptor<Post> postCaptor = ArgumentCaptor.forClass(Post.class);
@@ -62,29 +84,42 @@ public class PostTests {
                     .willAnswer(invocation -> invocation.getArgument(0));
 
             // when
-//            postService.create(adminId, "관리자", request);
-//
-//            // then
-//            verify(postRepository).save(postCaptor.capture());
-//            Post savedPost = postCaptor.getValue();
-//
-//            assertThat(savedPost.getCategory()).isEqualTo(Category.ANNOUNCEMENT);
-//            assertThat(savedPost.getIsPinned()).isTrue();     // 공지는 자동 상단 고정
-//            assertThat(savedPost.getIsDeleted()).isFalse();   // 기본값 false
+            postService.create(adminId, request);
+
+            // then
+            verify(postRepository).save(postCaptor.capture());
+            Post savedPost = postCaptor.getValue();
+
+            assertThat(savedPost.getCategory()).isEqualTo(Category.ANNOUNCEMENT);
+            assertThat(savedPost.getIsPinned()).isTrue();     // 공지는 자동 상단 고정
+            assertThat(savedPost.getIsDeleted()).isFalse();   // 기본값 false
         }
 
         @Test
         @DisplayName("관리자가 아닌 사용자가 공지사항을 등록하면 예외가 발생한다.")
         void nonAdminCannotCreateAnnouncement() {
             // given
-            Long userId = 2L;
+            String memberId = "2";
 
             CreatePostRequest request = org.mockito.Mockito.mock(CreatePostRequest.class);
             given(request.getCategory()).willReturn(Category.ANNOUNCEMENT);
 
+            UserDTO normalUser = org.mockito.Mockito.mock(UserDTO.class);
+            given(normalUser.getName()).willReturn("일반유저");
+            given(normalUser.getRole()).willReturn("USER");
+
+            UserDetailResponse userDetail = org.mockito.Mockito.mock(UserDetailResponse.class);
+            given(userDetail.getUser()).willReturn(normalUser);
+
+            ApiResponse<UserDetailResponse> apiResponse =
+                    Mockito.mock(ApiResponse.class);
+            given(apiResponse.getData()).willReturn(userDetail);
+
+            given(memberClient.getUserDetail(memberId)).willReturn(apiResponse);
+
             // when & then
-//            assertThatThrownBy(() -> postService.create(userId, "일반유저", request))
-//                    .isInstanceOf(GlobalException.class);
+            assertThatThrownBy(() -> postService.create(memberId, request))
+                    .isInstanceOf(GlobalException.class);
         }
     }
 
@@ -96,11 +131,12 @@ public class PostTests {
         @DisplayName("게시글 단건 조회 시 조회수와 댓글 수를 포함한 응답을 반환한다.")
         void getPostWithViewAndCommentCount() {
             // given
-            Long postId = 10L;
+            String memberId = "1";
+            Long postId = 5L;
 
             Post post = Post.builder()
                     .id(postId)
-                    .memberId(1L)
+                    .memberId(2L)
                     .memberName("작성자")
                     .category(Category.GENERAL)
                     .title("제목")
@@ -119,7 +155,7 @@ public class PostTests {
             given(commentRepository.countByPostId(postId)).willReturn(3L);
 
             // when
-            GetPostResponse response = postService.getPost(postId);
+            GetPostResponse response = postService.getPost(memberId, postId);
 
             // then
             assertThat(response.getPostId()).isEqualTo(postId);
@@ -189,3 +225,4 @@ public class PostTests {
         }
     }
 }
+

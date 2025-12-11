@@ -1,13 +1,19 @@
 package com.whatthefork.communicationandalarm.commentTest;
 
+import com.whatthefork.communicationandalarm.client.MemberClient;
 import com.whatthefork.communicationandalarm.comment.domain.Comment;
 import com.whatthefork.communicationandalarm.comment.domain.CommentRepository;
 import com.whatthefork.communicationandalarm.comment.domain.CommentService;
+import com.whatthefork.communicationandalarm.common.ApiResponse;
 import com.whatthefork.communicationandalarm.common.dto.request.CreateCommentRequest;
 import com.whatthefork.communicationandalarm.common.dto.request.UpdateCommentRequest;
 import com.whatthefork.communicationandalarm.common.dto.response.CommentResponse;
+import com.whatthefork.communicationandalarm.common.dto.response.UserDTO;
+import com.whatthefork.communicationandalarm.common.dto.response.UserDetailResponse;
 import com.whatthefork.communicationandalarm.common.exception.GlobalException;
 import com.whatthefork.communicationandalarm.common.utils.Page;
+import com.whatthefork.communicationandalarm.post.domain.Post;
+import com.whatthefork.communicationandalarm.post.domain.PostRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,7 +21,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
@@ -25,9 +34,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("댓글 서비스 테스트")
 public class CommentTests {
 
@@ -37,7 +48,11 @@ public class CommentTests {
     @Mock
     private CommentRepository commentRepository;
 
-    private static final Long MAX_DEPTH = 2L;
+    @Mock
+    private MemberClient memberClient;
+
+    @Mock
+    private PostRepository postRepository;
 
     @Nested
     @DisplayName("댓글 등록")
@@ -47,12 +62,31 @@ public class CommentTests {
         @DisplayName("루트 댓글(부모 없음) 등록 성공")
         void createRootComment_success() {
 
-            Long memberId = 1L;
+            // given
+            String memberId = "1";
             Long postId = 10L;
+
+            Post post = Mockito.mock(Post.class);
+            given(postRepository.findByIdAndIsDeletedFalse(postId))
+                    .willReturn(Optional.of(post));
 
             CreateCommentRequest request = org.mockito.Mockito.mock(CreateCommentRequest.class);
             given(request.getParentCommentId()).willReturn(null);
             given(request.getContent()).willReturn("루트 댓글입니다.");
+
+            UserDTO user = Mockito.mock(UserDTO.class);
+            given(user.getId()).willReturn(1L);
+            given(user.getName()).willReturn("테스트유저");
+
+            UserDetailResponse detail = Mockito.mock(UserDetailResponse.class);
+            given(detail.getUser()).willReturn(user);
+
+            ApiResponse<UserDetailResponse> api = Mockito.mock(ApiResponse.class);
+
+            lenient().when(api.getData()).thenReturn(detail);
+
+            given(memberClient.getUserDetail(anyString()))
+                    .willReturn(api);
 
             ArgumentCaptor<Comment> captor = ArgumentCaptor.forClass(Comment.class);
             given(commentRepository.save(any(Comment.class)))
@@ -65,7 +99,8 @@ public class CommentTests {
             verify(commentRepository).save(captor.capture());
             Comment saved = captor.getValue();
 
-            assertThat(saved.getMemberId()).isEqualTo(memberId);
+            assertThat(saved.getMemberId()).isEqualTo(1L);
+            assertThat(saved.getMemberName()).isEqualTo("테스트유저");
             assertThat(saved.getPostId()).isEqualTo(postId);
             assertThat(saved.getParentCommentId()).isNull();
             assertThat(saved.getDepth()).isEqualTo(0L);
@@ -76,20 +111,16 @@ public class CommentTests {
         @DisplayName("부모 댓글 depth가 최대 깊이 이면 예외 발생")
         void createReply_exceedsMaxDepth_fail() {
             // given
-            Long memberId = 1L;
             Long postId = 10L;
-            Long parentId = 100L;
-
-            CreateCommentRequest request = org.mockito.Mockito.mock(CreateCommentRequest.class);
-            given(request.getParentCommentId()).willReturn(parentId);
+            Long parentId = 99L;
 
             Comment parent = new Comment(
                     parentId,
-                    memberId,
+                    1L,
                     postId,
                     null,
-                    "부모",
-                    MAX_DEPTH, // 최대 깊이
+                    "테스트",
+                    2L,
                     "부모 댓글",
                     false
             );
@@ -98,8 +129,12 @@ public class CommentTests {
                     .willReturn(Optional.of(parent));
 
             // when & then
-            assertThatThrownBy(() -> commentService.create(memberId, postId, request))
-                    .isInstanceOf(GlobalException.class);
+            CreateCommentRequest request = Mockito.mock(CreateCommentRequest.class);
+            given(request.getParentCommentId()).willReturn(parentId);
+
+            assertThatThrownBy(() ->
+                    commentService.create("1", postId, request)
+            ).isInstanceOf(GlobalException.class);
         }
     }
 
@@ -111,27 +146,26 @@ public class CommentTests {
         @DisplayName("작성자가 자신의 댓글을 수정한다.")
         void updateComment_success() {
 
-            Long memberId = 1L;
-            Long commentId = 10L;
-
             Comment comment = new Comment(
-                    commentId,
-                    memberId,
+                    10L,
+                    1L,
                     100L,
+
                     null,
                     "작성자",
                     0L,
-                    "원래 내용",
+
+                    "기존 내용",
                     false
             );
 
-            given(commentRepository.findByCommentIdAndIsDeletedFalse(commentId))
+            given(commentRepository.findByCommentIdAndIsDeletedFalse(10L))
                     .willReturn(Optional.of(comment));
 
-            UpdateCommentRequest request = org.mockito.Mockito.mock(UpdateCommentRequest.class);
+            UpdateCommentRequest request = Mockito.mock(UpdateCommentRequest.class);
             given(request.getContent()).willReturn("수정된 내용");
 
-            commentService.update(memberId, commentId, request);
+            commentService.update("1", 10L, request);
 
             assertThat(comment.getContent()).isEqualTo("수정된 내용");
         }
@@ -140,27 +174,24 @@ public class CommentTests {
         @DisplayName("작성자가 아니면 댓글 수정 실패")
         void updateComment_notOwner_fail() {
 
-            Long ownerId = 1L;
-            Long otherUserId = 2L;
-            Long commentId = 10L;
-
             Comment comment = new Comment(
-                    commentId,
-                    ownerId,
+                    10L,
+                    1L,
                     100L,
+
                     null,
                     "작성자",
                     0L,
-                    "댓글내용",
+                    "내용",
                     false
             );
 
-            given(commentRepository.findByCommentIdAndIsDeletedFalse(commentId))
+            given(commentRepository.findByCommentIdAndIsDeletedFalse(10L))
                     .willReturn(Optional.of(comment));
 
-            UpdateCommentRequest request = org.mockito.Mockito.mock(UpdateCommentRequest.class);
+            UpdateCommentRequest request = Mockito.mock(UpdateCommentRequest.class);
 
-            assertThatThrownBy(() -> commentService.update(otherUserId, commentId, request))
+            assertThatThrownBy(() -> commentService.update("2", 10L, request))
                     .isInstanceOf(GlobalException.class);
         }
     }
@@ -173,12 +204,9 @@ public class CommentTests {
         @DisplayName("대댓글이 없으면 삭제 성공")
         void deleteComment_success() {
 
-            Long memberId = 1L;
-            Long commentId = 10L;
-
             Comment comment = new Comment(
-                    commentId,
-                    memberId,
+                    10L,
+                    1L,
                     100L,
                     null,
                     "작성자",
@@ -187,13 +215,13 @@ public class CommentTests {
                     false
             );
 
-            given(commentRepository.findByCommentIdAndIsDeletedFalse(commentId))
+            given(commentRepository.findByCommentIdAndIsDeletedFalse(10L))
                     .willReturn(Optional.of(comment));
 
-            given(commentRepository.existsByParentCommentIdAndIsDeletedFalse(commentId))
+            given(commentRepository.existsByParentCommentIdAndIsDeletedFalse(10L))
                     .willReturn(false);
 
-            commentService.delete(memberId, commentId);
+            commentService.delete("1", 10L);
 
             assertThat(comment.getIsDeleted()).isTrue();
         }
@@ -202,25 +230,21 @@ public class CommentTests {
         @DisplayName("작성자가 아니면 삭제 실패")
         void deleteComment_notOwner_fail() {
 
-            Long ownerId = 1L;
-            Long otherUserId = 2L;
-            Long commentId = 10L;
-
             Comment comment = new Comment(
-                    commentId,
-                    ownerId,
+                    10L,
+                    1L,
                     100L,
                     null,
                     "작성자",
                     0L,
-                    "댓글",
+                    "내용",
                     false
             );
 
-            given(commentRepository.findByCommentIdAndIsDeletedFalse(commentId))
+            given(commentRepository.findByCommentIdAndIsDeletedFalse(10L))
                     .willReturn(Optional.of(comment));
 
-            assertThatThrownBy(() -> commentService.delete(otherUserId, commentId))
+            assertThatThrownBy(() -> commentService.delete("5", 10L))
                     .isInstanceOf(GlobalException.class);
         }
 
@@ -228,27 +252,19 @@ public class CommentTests {
         @DisplayName("대댓글이 있으면 삭제 실패")
         void deleteComment_hasReply_fail() {
 
-            Long memberId = 1L;
-            Long commentId = 10L;
-
             Comment comment = new Comment(
-                    commentId,
-                    memberId,
-                    100L,
-                    null,
-                    "작성자",
-                    0L,
-                    "부모 댓글",
-                    false
+                    10L, 1L, 100L,
+                    null, "작성자", 0L,
+                    "삭제될 댓글", false
             );
 
-            given(commentRepository.findByCommentIdAndIsDeletedFalse(commentId))
+            given(commentRepository.findByCommentIdAndIsDeletedFalse(10L))
                     .willReturn(Optional.of(comment));
 
-            given(commentRepository.existsByParentCommentIdAndIsDeletedFalse(commentId))
+            given(commentRepository.existsByParentCommentIdAndIsDeletedFalse(10L))
                     .willReturn(true);
 
-            assertThatThrownBy(() -> commentService.delete(memberId, commentId))
+            assertThatThrownBy(() -> commentService.delete("1", 10L))
                     .isInstanceOf(GlobalException.class);
         }
     }

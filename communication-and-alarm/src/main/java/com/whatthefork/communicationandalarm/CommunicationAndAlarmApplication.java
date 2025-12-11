@@ -9,7 +9,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing
-@OpenAPIDefinition(servers = {@Server(url = "/", description = "Default Server URL")})
+@OpenAPIDefinition(
+        servers = {
+                @Server(url = "/api/v1/communication-and-alarm", description = "Gateway Server URL")
+        }
+)
 @EnableFeignClients(basePackages = "com.whatthefork.communicationandalarm.client")
 // @EnableFeignClients(basePackages = "com.whatthefork.communicationandalarm")
 public class CommunicationAndAlarmApplication {

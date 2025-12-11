@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,11 +29,11 @@ public class CommentController {
     @Operation(summary = "댓글 등록", description = "새 댓글을 등록합니다. ")
     @PostMapping("{postId}")
     public ResponseEntity<ApiResponse<Void>> createComment(
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal String userIds,
             @PathVariable Long postId,
             @RequestBody @Valid CreateCommentRequest request
     ) {
-        commentService.create(memberId, postId, request);
+        commentService.create(userIds, postId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(null));
     }
 
@@ -42,11 +43,11 @@ public class CommentController {
     @Operation(summary = "댓글 수정", description = "댓글을 수정합니다. ")
     @PutMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> updateComment(
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal String userIds,
             @PathVariable Long commentId,
             @RequestBody UpdateCommentRequest request
     ) {
-        commentService.update(memberId, commentId, request);
+        commentService.update(userIds, commentId, request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
     }
 
@@ -57,10 +58,10 @@ public class CommentController {
     @Operation(summary = "댓글 삭제", description = "댓글을 삭제합니다. ")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponse<Void>> deleteComment(
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal String userIds,
             @PathVariable Long commentId
     ) {
-        commentService.delete(memberId, commentId);
+        commentService.delete(userIds, commentId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
 
     }

@@ -13,10 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
-    // private final MemberRepository memberRepository;
 
     /*
     * 게시글 등록
@@ -52,9 +48,7 @@ public class PostController {
             @AuthenticationPrincipal String userIds,
             @RequestBody @Valid UpdatePostRequest request
     ) {
-        Long memberId = Long.parseLong(userIds);
-
-        postService.update(memberId, postId, request);
+        postService.update(userIds, postId, request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
     }
 
@@ -67,9 +61,7 @@ public class PostController {
             @AuthenticationPrincipal String userIds,
             @PathVariable Long postId
     ) {
-        Long memberId = Long.parseLong(userIds);
-
-        postService.delete(memberId, postId);
+        postService.delete(userIds, postId);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(null));
     }
 
@@ -79,9 +71,10 @@ public class PostController {
     @Operation(summary = "게시글 조회", description = "게시글을 조회합니다. ")
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<GetPostResponse>> getPost(
+            @AuthenticationPrincipal String userIds,
             @PathVariable Long postId
     ) {
-        GetPostResponse response = postService.getPost(postId);
+        GetPostResponse response = postService.getPost(userIds, postId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 

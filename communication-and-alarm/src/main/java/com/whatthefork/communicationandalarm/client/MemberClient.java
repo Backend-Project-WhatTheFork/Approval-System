@@ -16,5 +16,5 @@ import java.lang.reflect.Member;
 public interface MemberClient {
 
     @GetMapping("/api/v1/user-service/users/{userId}")
-    ApiResponse<UserDetailResponse> getUserDetail(String userId);
+    ApiResponse<UserDetailResponse> getUserDetail(@PathVariable String userId);
 }

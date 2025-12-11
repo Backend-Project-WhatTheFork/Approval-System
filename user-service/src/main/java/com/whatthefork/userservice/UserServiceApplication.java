@@ -8,8 +8,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@OpenAPIDefinition(servers = {@Server(url = "/user-service", description = "User Server URL")})
-public class UserServiceApplication {
+@OpenAPIDefinition(servers = {
+        @Server(url = "/api/v1/user-service", description = "User Server URL")
+})public class UserServiceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(UserServiceApplication.class, args);

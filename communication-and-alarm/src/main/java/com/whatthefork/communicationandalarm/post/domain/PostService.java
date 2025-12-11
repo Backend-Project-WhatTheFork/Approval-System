@@ -39,47 +39,54 @@ public class PostService {
         ApiResponse<UserDetailResponse> info = memberClient.getUserDetail(memberId);
         UserDTO user = info.getData().getUser();
 
+        Long memberIdLong = Long.parseLong(memberId);
         Category category = request.getCategory();
-        // 임시 관리자 검증
-//        boolean isAdmin = memberId != null && memberId.equals(1L);
-//
-//        if (category == Category.ANNOUNCEMENT && !isAdmin) {
-//            throw new GlobalException(ErrorCode.POST_ACCESS_DENIED);
-//        }
+        String memberName = user.getName();
+        String role = user.getRole();
 
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(role);
 
-//        Post post = Post.create(
-//                memberId,
-//                memberName,
-//                request.getTitle(),
-//                request.getContent(),
-//                category
-//        );
+        if (category == Category.ANNOUNCEMENT && !isAdmin) {
+        throw new GlobalException(ErrorCode.POST_ACCESS_DENIED);
+    }
 
-//        if (category == Category.ANNOUNCEMENT) {
-//            post.pin();
-//        }
-//
-//        postRepository.save(post);
+            Post post = Post.create(
+            memberIdLong,
+            memberName,
+            request.getTitle(),
+            request.getContent(),
+            category
+    );
+
+    if (category == Category.ANNOUNCEMENT) {
+        post.pin();
+    }
+
+    postRepository.save(post);
+
     }
 
     /*
      * 게시글 수정
      * */
     @Transactional
-    public void update(Long memberId, Long postId, UpdatePostRequest request) {
+    public void update(String memberId, Long postId, UpdatePostRequest request) {
+
+        ApiResponse<UserDetailResponse> info = memberClient.getUserDetail(memberId);
+        UserDTO user = info.getData().getUser();
+
+        Long memberIdLong = Long.parseLong(memberId);
+        String role = user.getRole();
+        Category category = request.getCategory();
 
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
 
-        if (!post.isOwner(memberId)) {
+        if (!post.isOwner(memberIdLong)) {
             throw new GlobalException(ErrorCode.POST_ACCESS_DENIED);
         }
 
-        Category category = request.getCategory();
-
-        // 임시 관리자 검증
-        boolean isAdmin = memberId != null && memberId.equals(1L);
+        boolean isAdmin = "ADMIN".equalsIgnoreCase(role);
 
         if (category == Category.ANNOUNCEMENT && !isAdmin) {
             throw new GlobalException(ErrorCode.POST_ACCESS_DENIED);
@@ -101,11 +108,14 @@ public class PostService {
      * 게시글 삭제
      * */
     @Transactional
-    public void delete(Long memberId, Long postId) {
+    public void delete(String memberId, Long postId) {
+
+        Long memberIdLong = Long.parseLong(memberId);
+
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
 
-        if (!post.isOwner(memberId)) {
+        if (!post.isOwner(memberIdLong)) {
             throw new GlobalException(ErrorCode.POST_ACCESS_DENIED);
         }
         post.delete();
@@ -115,13 +125,14 @@ public class PostService {
      * 게시글 조회
      * */
     @Transactional(readOnly = true)
-    public GetPostResponse getPost(Long postId) {
+    public GetPostResponse getPost(String memberId, Long postId) {
+
+        Long memberIdLong = Long.parseLong(memberId);
+
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
 
-        // 임시 멤버
-        Long memberId = 1L;
-        PostViewLog viewLog = PostViewLog.create(memberId, postId);
+        PostViewLog viewLog = PostViewLog.create(memberIdLong, postId);
         postRepository.save(viewLog);
 
         Long viewCount = postRepository.countViewsByPostId(postId);
