@@ -104,6 +104,7 @@
 ### 협업 도구
 - Discord <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white">
 - Notion <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+  - https://www.notion.so/coffit23/2-What-The-Fork-2b6a02b1ffb1812fa667f22ff0f2ef8c
 - Github <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white">
 - Google Drive <img src="https://img.shields.io/badge/Google%20Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white">
 - Jira <img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=jira&logoColor=white">
@@ -116,7 +117,33 @@
 
 </br>
 
-## 5. 컨벤션
+## 5. 프로젝트 구조
+### MSA 구조도
+<img width="871" height="801" alt="msa_architecture drawio" src="https://github.com/user-attachments/assets/53c2fb26-cf9f-446f-a581-065f58bcc05b" />
+
+### ERD
+<img width="1040" height="666" alt="스크린샷 2025-12-11 오후 5 10 28" src="https://github.com/user-attachments/assets/7dac025a-8568-4c54-8872-0a7a628b83a1" />
+
+### 패키지 구조
+<img width="394" height="620" alt="스크린샷 2025-12-11 오후 5 10 58" src="https://github.com/user-attachments/assets/a2bbce09-af24-4fd1-9c1e-e7ab2770253a" />
+
+
+</br>
+
+----
+
+</br>
+
+## 6. 프로젝트 기획
+
+
+</br>
+
+----
+
+</br>
+
+## 7. 컨벤션
 ## Back-end
 ### 공통 사항
 - 단위 테스트 작성(service 메소드 별로) : Junit 사용
