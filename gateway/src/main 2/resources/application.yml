@@ -10,6 +10,13 @@ spring:
       server:
         webflux:
           routes:
+            - id: auth-and-security
+              uri: lb://AUTH-AND-SECURITY
+              predicates:
+                - Path=/api/v1/auth-and-security/**
+              filters:
+                - RewritePath=/api/v1/auth-and-security/(?<segment>.*), /$\{segment}
+
             - id: approval-system
               uri: lb://APPROVAL-SYSTEM
               predicates:
@@ -75,15 +82,17 @@ springdoc:
     config-url: /v3/api-docs/swagger-config
     disable-swagger-default-url: true
     urls:
-      - name: 1. 결재 시스템 (Approval)
+      - name: 1. 인증/보안 (Auth)
+        url: /api/v1/auth-and-security/v3/api-docs
+      - name: 2. 결재 시스템 (Approval)
         url: /api/v1/approval-system/v3/api-docs
-      - name: 2. 근태 관리 (Attendance)
+      - name: 3. 근태 관리 (Attendance)
         url: /api/v1/attendance-tracking/v3/api-docs
-      - name: 3. 소통 및 알림 (Communication and Alarm)
+      - name: 4. 소통 및 알림 (Communication and Alarm)
         url: /api/v1/communication-and-alarm/v3/api-docs
-      - name: 4. 자원 예약 (Reservation)
+      - name: 5. 자원 예약 (Reservation)
         url: /api/v1/resource-reservation/v3/api-docs
-      - name: 5. 사용자 서비스 (User)
+      - name: 6. 사용자 서비스 (User)
         url: /api/v1/user-service/v3/api-docs
   api-docs:
     enabled: true
