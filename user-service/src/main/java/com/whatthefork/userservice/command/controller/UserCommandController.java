@@ -29,7 +29,7 @@ public class UserCommandController {
                     description = "직원이 등록됨"
             )
     })
-    @PostMapping("/users")
+    @PostMapping("/register")
     public ResponseEntity<ApiResponse<Void>> register(@Valid @RequestBody UserCreateRequest request) {
         userCommandService.registerUser(request);
         return ResponseEntity
