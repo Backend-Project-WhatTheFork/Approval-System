@@ -236,8 +236,7 @@
 </details>
 
 ### WBS
-<img width="2339" height="1653" alt="백엔드 2조 xlsx - WBS-1" src="https://github.com/user-attachments/assets/74bc66c8-0100-4347-a81e-ab6f1b1e5cbd" />
-<img width="2339" height="1653" alt="백엔드 2조 xlsx - WBS-2" src="https://github.com/user-attachments/assets/9fdc579f-2c48-4f61-b20f-64c1834ab3e2" />
+<img width="1684" height="1190" alt="undefined-" src="https://github.com/user-attachments/assets/a75f2add-4a8f-45b0-8427-50b668c67299" />
 
 
 </br>
